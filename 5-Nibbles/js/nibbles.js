@@ -1,18 +1,18 @@
 document.addEventListener('keydown', function(event)
 {
-    if (event.keyCode == 39)
+    if (event.keyCode == 39 && game.snake.direction != 2)
     {
         game.snake.direction = 0;
     }
-    else if (event.keyCode == 40)
+    else if (event.keyCode == 40 && game.snake.direction != 3)
     {
         game.snake.direction = 1;
     }
-    else if (event.keyCode == 37)
+    else if (event.keyCode == 37 && game.snake.direction != 0)
     {
         game.snake.direction = 2;
     }
-    else if (event.keyCode == 38)
+    else if (event.keyCode == 38 && game.snake.direction != 1)
     {
         game.snake.direction = 3;
     }
@@ -26,11 +26,22 @@ game.height = 30;
 game.gridSize = 10;
 
 var snake = { };
-snake.x = 0;
-snake.y = 0;
 snake.direction = 0;
-snake.size = 1;
+// Unused for now
+snake.size = 5;
 snake.speed = 5;
+
+snake.positions = [];
+var position = {x: 5, y: 1};
+snake.positions.push(position);
+position = {x: 4, y: 1};
+snake.positions.push(position);
+position = {x: 3, y: 1};
+snake.positions.push(position);
+position = {x: 2, y: 1};
+snake.positions.push(position);
+position = {x: 1, y: 1};
+snake.positions.push(position);
 game.snake = snake;
 
 var raf =
@@ -60,8 +71,8 @@ game.run = function(in_time)
             game.frameTimer = 0;
             
             game.update();
-            game.draw();
         }
+        game.draw();
         lastTimestamp = now;
         raf(game.run);
     }
@@ -70,31 +81,47 @@ game.run = function(in_time)
 game.update = function()
 {
     // Move snake
+    for (var pos = game.snake.positions.length - 1; pos > 0; pos--)
+    {
+        console.log(game.snake.positions[pos]);
+        game.snake.positions[pos].x = game.snake.positions[pos - 1].x;
+        game.snake.positions[pos].y = game.snake.positions[pos - 1].y;
+    }
+    
     switch(game.snake.direction)
     {
         case 0:
-            game.snake.x++;
+            game.snake.positions[0].x++;
             break;
         case 1:
-            game.snake.y++;
+            game.snake.positions[0].y++;
             break;
         case 2:
-            game.snake.x--;
+            game.snake.positions[0].x--;
             break;
         case 3:
-            game.snake.y--;
+            game.snake.positions[0].y--;
             break;
     }
     
     // Check for collisions:
     // Walls
-    if (game.snake.x < 0 || game.snake.y < 0 || game.snake.x > game.width || game.snake.y > game.height)
+    if (game.snake.positions[0].x < 0 || game.snake.positions[0].y < 0 || game.snake.positions[0].x >= game.width || game.snake.positions[0].y >= game.height)
     {
         alert('dead');
         game.running = false;
     }
     
     // Itself
+    for (var pos = 1; pos < game.snake.positions.length; pos++)
+    {
+        if (game.snake.positions[0].x === game.snake.positions[pos].x &&
+            game.snake.positions[0].y === game.snake.positions[pos].y)
+        {
+            alert('dead');
+            game.running = false;
+        }
+    }
     
     // Canny
 };
@@ -103,5 +130,8 @@ game.draw = function()
 {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     ctx.fillStyle = "rgb(200,0,0)";
-    ctx.fillRect (game.snake.x * game.gridSize, game.snake.y * game.gridSize, game.gridSize, game.gridSize);
+    for (var pos = 0; pos < game.snake.positions.length; pos++)
+    {
+        ctx.fillRect (game.snake.positions[pos].x * game.gridSize, game.snake.positions[pos].y * game.gridSize, game.gridSize, game.gridSize);
+    }
 };
