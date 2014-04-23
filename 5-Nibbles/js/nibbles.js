@@ -30,19 +30,35 @@ snake.direction = 0;
 // Unused for now
 snake.size = 5;
 snake.speed = 5;
-
 snake.positions = [];
-var position = {x: 5, y: 1};
+var position = {x: 1, y: 0};
 snake.positions.push(position);
-position = {x: 4, y: 1};
-snake.positions.push(position);
-position = {x: 3, y: 1};
-snake.positions.push(position);
-position = {x: 2, y: 1};
-snake.positions.push(position);
-position = {x: 1, y: 1};
+position = {x: 0, y: 0};
 snake.positions.push(position);
 game.snake = snake;
+
+var GenerateCandy = function()
+{
+    var candyPosition = {x: 0, y: 0};
+    var collision = true;
+    while (collision)
+    {
+        collision = false;
+        candyPosition.x = Math.floor((Math.random() * game.width) + 1);
+        candyPosition.y = Math.floor((Math.random() * game.height) + 1);
+        for (var pos = 0; pos < game.snake.positions.length; pos++)
+        {
+            if (candyPosition.x === game.snake.positions[pos].x &&
+                candyPosition.y === game.snake.positions[pos].y)
+            {
+                collision = true;
+            }
+        }
+    }
+    return candyPosition;
+};
+
+game.candyPosition = GenerateCandy();
 
 var raf =
         window.requestAnimationFrame       || 
@@ -83,7 +99,6 @@ game.update = function()
     // Move snake
     for (var pos = game.snake.positions.length - 1; pos > 0; pos--)
     {
-        console.log(game.snake.positions[pos]);
         game.snake.positions[pos].x = game.snake.positions[pos - 1].x;
         game.snake.positions[pos].y = game.snake.positions[pos - 1].y;
     }
@@ -124,11 +139,24 @@ game.update = function()
     }
     
     // Canny
+    if (game.snake.positions[0].x == game.candyPosition.x && 
+        game.snake.positions[0].y == game.candyPosition.y)
+    {
+        game.candyPosition = GenerateCandy();
+        game.snake.speed++;
+        // TODO: elongate snake, up score
+    }
 };
 
 game.draw = function()
 {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    
+    // Candy
+    ctx.fillStyle = "rgb(0,200,0)";
+    ctx.fillRect(game.candyPosition.x * game.gridSize, game.candyPosition.y * game.gridSize, game.gridSize, game.gridSize);
+    
+    // Snake
     ctx.fillStyle = "rgb(200,0,0)";
     for (var pos = 0; pos < game.snake.positions.length; pos++)
     {
