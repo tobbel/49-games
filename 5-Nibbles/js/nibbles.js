@@ -30,6 +30,7 @@ snake.direction = 0;
 // Unused for now
 snake.size = 5;
 snake.speed = 5;
+snake.scored = false;
 snake.positions = [];
 var position = {x: 1, y: 0};
 snake.positions.push(position);
@@ -102,26 +103,43 @@ game.update = function()
         game.snake.positions[pos].x = game.snake.positions[pos - 1].x;
         game.snake.positions[pos].y = game.snake.positions[pos - 1].y;
     }
-    
+
+    var delta = {x: 0, y: 0};
     switch(game.snake.direction)
     {
         case 0:
-            game.snake.positions[0].x++;
+            delta.x = 1;
             break;
         case 1:
-            game.snake.positions[0].y++;
+            delta.y = 1
             break;
         case 2:
-            game.snake.positions[0].x--;
+            delta.x = -1;
             break;
         case 3:
-            game.snake.positions[0].y--;
+            delta.y = -1;
             break;
+    }
+    
+    if(game.snake.scored)
+    {
+        game.snake.scored = false;
+        delta.x += game.snake.positions[0].x;
+        delta.y += game.snake.positions[0].y;
+        game.snake.positions.unshift(delta);
+    }
+    else
+    {
+        game.snake.positions[0].x += delta.x;
+        game.snake.positions[0].y += delta.y;
     }
     
     // Check for collisions:
     // Walls
-    if (game.snake.positions[0].x < 0 || game.snake.positions[0].y < 0 || game.snake.positions[0].x >= game.width || game.snake.positions[0].y >= game.height)
+    if (game.snake.positions[0].x < 0 || 
+        game.snake.positions[0].y < 0 || 
+        game.snake.positions[0].x >= game.width || 
+        game.snake.positions[0].y >= game.height)
     {
         alert('dead');
         game.running = false;
@@ -144,7 +162,8 @@ game.update = function()
     {
         game.candyPosition = GenerateCandy();
         game.snake.speed++;
-        // TODO: elongate snake, up score
+        game.snake.scored = true;
+        // TODO: Up & display score, reset button
     }
 };
 
@@ -154,12 +173,16 @@ game.draw = function()
     
     // Candy
     ctx.fillStyle = "rgb(0,200,0)";
-    ctx.fillRect(game.candyPosition.x * game.gridSize, game.candyPosition.y * game.gridSize, game.gridSize, game.gridSize);
+    ctx.fillRect(game.candyPosition.x * game.gridSize, 
+                 game.candyPosition.y * game.gridSize, 
+                 game.gridSize, game.gridSize);
     
     // Snake
     ctx.fillStyle = "rgb(200,0,0)";
     for (var pos = 0; pos < game.snake.positions.length; pos++)
     {
-        ctx.fillRect (game.snake.positions[pos].x * game.gridSize, game.snake.positions[pos].y * game.gridSize, game.gridSize, game.gridSize);
+        ctx.fillRect (game.snake.positions[pos].x * game.gridSize, 
+                      game.snake.positions[pos].y * game.gridSize, 
+                      game.gridSize, game.gridSize);
     }
 };
