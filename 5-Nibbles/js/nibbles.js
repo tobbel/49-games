@@ -1,42 +1,60 @@
-document.addEventListener('keydown', function(event)
-{
-    if (event.keyCode == 39 && game.snake.direction != 2)
-    {
-        game.snake.direction = 0;
-    }
-    else if (event.keyCode == 40 && game.snake.direction != 3)
-    {
-        game.snake.direction = 1;
-    }
-    else if (event.keyCode == 37 && game.snake.direction != 0)
-    {
-        game.snake.direction = 2;
-    }
-    else if (event.keyCode == 38 && game.snake.direction != 1)
-    {
-        game.snake.direction = 3;
-    }
-}, true);
-
 var game = { };
-game.running = true;
-game.frameTimer = 0;
 game.width = 30;
 game.height = 30;
 game.gridSize = 10;
 
 var snake = { };
 snake.direction = 0;
-// Unused for now
-snake.size = 5;
 snake.speed = 5;
-snake.scored = false;
 snake.positions = [];
-var position = {x: 1, y: 0};
-snake.positions.push(position);
-position = {x: 0, y: 0};
-snake.positions.push(position);
+
 game.snake = snake;
+
+// Setup UI
+var scoreDisplay = document.getElementById('score');
+var setup = function()
+{
+    game.reset();
+};
+
+game.reset = function()
+{
+    game.running = true;
+    game.frameTimer = 0;
+    game.score = 0;
+    
+    game.snake.scored = false;
+    game.snake.direction = 0;
+    game.snake.positions = [];
+    var position = {x: 1, y: 0};
+    game.snake.positions.push(position);
+    position = {x: 0, y: 0};
+    game.snake.positions.push(position);
+    
+    game.lastTimestamp = Date.now();
+    
+    game.run();
+};
+
+document.addEventListener('keydown', function(event)
+{
+    if (event.keyCode == 39 && game.snake.direction !== 2)
+    {
+        game.snake.direction = 0;
+    }
+    else if (event.keyCode == 40 && game.snake.direction !== 3)
+    {
+        game.snake.direction = 1;
+    }
+    else if (event.keyCode == 37 && game.snake.direction !== 0)
+    {
+        game.snake.direction = 2;
+    }
+    else if (event.keyCode == 38 && game.snake.direction !== 1)
+    {
+        game.snake.direction = 3;
+    }
+}, true);
 
 var GenerateCandy = function()
 {
@@ -45,8 +63,8 @@ var GenerateCandy = function()
     while (collision)
     {
         collision = false;
-        candyPosition.x = Math.floor((Math.random() * game.width) + 1);
-        candyPosition.y = Math.floor((Math.random() * game.height) + 1);
+        candyPosition.x = Math.floor((Math.random() * (game.width - 1)) + 1);
+        candyPosition.y = Math.floor((Math.random() * (game.height - 1)) + 1);
         for (var pos = 0; pos < game.snake.positions.length; pos++)
         {
             if (candyPosition.x === game.snake.positions[pos].x &&
@@ -56,6 +74,7 @@ var GenerateCandy = function()
             }
         }
     }
+    console.log("Generated candy at " + candyPosition.x + ", " + candyPosition.y);
     return candyPosition;
 };
 
@@ -75,13 +94,12 @@ if (canvas.getContext)
     ctx = canvas.getContext('2d');
 }
 
-var lastTimestamp = Date.now();
 game.run = function(in_time)
 {
     if (game.running)
     {
         var now = Date.now();
-        var dt = now - lastTimestamp;
+        var dt = now - game.lastTimestamp;
         game.frameTimer += dt;
         if (game.frameTimer > (1000 / game.snake.speed))
         {
@@ -90,7 +108,7 @@ game.run = function(in_time)
             game.update();
         }
         game.draw();
-        lastTimestamp = now;
+        game.lastTimestamp = now;
         raf(game.run);
     }
 };
@@ -111,7 +129,7 @@ game.update = function()
             delta.x = 1;
             break;
         case 1:
-            delta.y = 1
+            delta.y = 1;
             break;
         case 2:
             delta.x = -1;
@@ -163,8 +181,9 @@ game.update = function()
         game.candyPosition = GenerateCandy();
         game.snake.speed++;
         game.snake.scored = true;
-        // TODO: Up & display score, reset button
+        game.score++;
     }
+    scoreDisplay.innerHTML = game.score;
 };
 
 game.draw = function()
@@ -186,3 +205,5 @@ game.draw = function()
                       game.gridSize, game.gridSize);
     }
 };
+
+window.onload = setup();

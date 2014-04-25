@@ -7,8 +7,12 @@
     <link rel="stylesheet" href="css/nibbles.css" type="text/css"/>
 </head>
 
-<body onload="game.run();">
+<body>
     <canvas id="canvas" width="300" height="300">This is a canvas</canvas>
+    <div id="ui" style="display:block;">
+    Score: <span id="score"></span>
+    <input type="button" style="float: right;" value="Reset" onclick="game.reset();"></input>
+    </div>
     <script src="js/nibbles.js"></script>
 </body>
 
