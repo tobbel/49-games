@@ -38,6 +38,7 @@ game.reset = function()
 
 document.addEventListener('keydown', function(event)
 {
+    // TODO: Better direction check, moving to the side+backwards in one "frame" makes you dead
     if (event.keyCode == 39 && game.snake.direction !== 2)
     {
         game.snake.direction = 0;
