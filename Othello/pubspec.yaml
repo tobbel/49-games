@@ -1,0 +1,4 @@
+name: Othello
+description: Othello in dart.
+dependencies:
+  browser: any
