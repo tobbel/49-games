@@ -1,0 +1,4 @@
+name: gameoflife
+description: A sample web application
+dependencies:
+  browser: any
