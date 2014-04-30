@@ -54,7 +54,7 @@ class Othello
     {
       int x = i % 8;
       int y = i ~/ 8;
-      int index = y * 8 + x;
+      int index = i;
       
       if (board[index] != 0)
         continue;
@@ -158,10 +158,66 @@ class Othello
     {
       print('yay!');
       board[index] = player;
+      flipTiles();
       if (player == 1) player = 2;
       else player = 1;
-      // TODO: FLIP IT
+      
+      
       calculateValidIndices();
+    }
+  }
+  
+  void flipTiles()
+  {
+    for (int i = 0; i < board.length; i++)
+    {
+      final int x = i % 8;
+      final int y = i ~/ 8;
+      final int index = i;
+      if (!isValidIndex(index) || board[index] == 0)
+        continue;
+      
+      // TODO: Break this out ofc
+      for (int row = -1; row < 2; row++)
+      {
+        for (int col = -1; col < 2; col++)
+        {
+          if (row == 0 && col == 0) continue;
+          int neighborX = x + col;
+          int neighborY = y + row;
+          if (isValidPoint(neighborX, neighborY))
+          {
+            int neighborIndex = neighborY * 8 + neighborX;
+            if (board[neighborIndex] != 0)
+            {
+              if (board[neighborIndex] == player)
+                continue;
+              else
+              {
+                List<int> toFlip = [neighborIndex];
+                // Keep going in the same direction until we find a friend or reach the edge
+                bool foundEnd = false;
+                int nextNeighborX = neighborX;
+                int nextNeighborY = neighborY;
+                while (!foundEnd)
+                {
+                  // Next in neighbor direction
+                  nextNeighborX += col;
+                  nextNeighborY += row;
+                  if (isValidPoint(nextNeighborX, nextNeighborY))
+                  {
+                    int nextNeighborIndex = nextNeighborY * 8 + nextNeighborX;
+                    toFlip.add(nextNeighborIndex);
+                    if (board[nextNeighborIndex] == player) foundEnd = true;
+                  }
+                  else break;
+                }
+                if (foundEnd) toFlip.forEach((f) => board[f] = player);
+              }
+            }
+          }
+        }
+      }
     }
   }
   
