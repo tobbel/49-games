@@ -8,7 +8,12 @@
 </head>
 <body>
     <div id="container">
-      <canvas id="game" width="544px" height="544px"></canvas>
+      <div id="gamediv">
+        <canvas id="game" width="544px" height="544px"></canvas>
+      </div>
+      <div id="ui" style="float: top;">
+        White player score: <span id="player1score"></span> Black player score: <span id="player2score"></span>
+      </div>
     </div>
 
     <script type="application/dart" src="dart/othello.dart"></script>

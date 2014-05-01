@@ -27,10 +27,14 @@ class Othello
   int canvasHeight;
   int player = 1;
   
+  int p1Score = 2;
+  int p2Score = 2;
+  
   final String backgroundColor = 'green'; 
 
   List<int> validIndices = [];
   List<String> colors = ['none', 'white', 'black'];
+  List<String> alphaColors = ['none', 'rgba(255,255,255,0.2)', 'rgba(0,0,0,0.2)'];
   
   // Automatically sets this.canvas to parameter
   Othello(this.canvas);
@@ -40,6 +44,11 @@ class Othello
     canvasWidth = canvas.width;
     canvasHeight = canvas.height;
     canvas.onMouseDown.listen(mouseDown);
+    
+    SpanElement p1ScoreLabel = querySelector("#player1score");
+    SpanElement p2ScoreLabel = querySelector("#player2score");
+    p1ScoreLabel.innerHtml = p1Score.toString();
+    p2ScoreLabel.innerHtml = p2Score.toString();
     
     calculateValidIndices();
 
@@ -136,48 +145,53 @@ class Othello
     Random random = new Random();
     int index = boardY * 8 + boardX;
     
-    // Some playing around fun stuff
-//    if (isValidIndex(index))
-//    {
-//      if (board[index] == 1)
-//        board[index] = 2;
-//      else if (board[index] == 2)
-//        board[index] = 1;
-//      else if (random.nextBool())
-//      {
-//        board[index] = 1;
-//      }
-//      else
-//      {
-//        board[index] = 2;
-//      }
-//      calculateValidIndices();
-//    }
-    
     if (validIndices.contains(index))
     {
       print('yay!');
       board[index] = player;
-      flipTiles();
+      flipTiles(index);
       if (player == 1) player = 2;
       else player = 1;
       
-      
       calculateValidIndices();
+      
+      if (validIndices.length <= 0)
+      {
+        if (player == 1) player = 2;
+        else player = 1;
+        
+        calculateValidIndices();
+        
+        if (validIndices.length <= 0)
+        {
+          // End game
+        }
+      }
     }
-  }
-  
-  void flipTiles()
-  {
+    
+    p1Score = 0;
+    p2Score = 0;
     for (int i = 0; i < board.length; i++)
     {
-      final int x = i % 8;
-      final int y = i ~/ 8;
-      final int index = i;
-      if (!isValidIndex(index) || board[index] == 0)
-        continue;
+      if (board[i] == 1)
+        p1Score++;
+      else if (board[i] == 2)
+        p2Score++;
+    }
+
+    SpanElement p1ScoreLabel = querySelector("#player1score");
+    SpanElement p2ScoreLabel = querySelector("#player2score");
+    p1ScoreLabel.innerHtml = p1Score.toString();
+    p2ScoreLabel.innerHtml = p2Score.toString();
+  }
+  
+  void flipTiles(int index)
+  {
+    List<int> allToFlip = [];
+
+      final int x = index % 8;
+      final int y = index ~/ 8;
       
-      // TODO: Break this out ofc
       for (int row = -1; row < 2; row++)
       {
         for (int col = -1; col < 2; col++)
@@ -208,23 +222,32 @@ class Othello
                   {
                     int nextNeighborIndex = nextNeighborY * 8 + nextNeighborX;
                     toFlip.add(nextNeighborIndex);
-                    if (board[nextNeighborIndex] == player) foundEnd = true;
+                    if (board[nextNeighborIndex] == player)
+                    {
+                      foundEnd = true;
+                    }
                   }
                   else break;
                 }
-                if (foundEnd) toFlip.forEach((f) => board[f] = player);
+                if (foundEnd)
+                {
+                  print('foundEnd from $x, $y to $nextNeighborX, $nextNeighborY');
+                  toFlip.forEach((f) => allToFlip.add(f));
+                }
               }
             }
           }
         }
       }
+    
+    for (int i = 0; i < allToFlip.length; i++)
+    {
+      board[allToFlip[i]] = player;
     }
   }
   
   void update(double dt)
   {
-    // TODO: Update stuffz
-    // TODO: Update rate
     draw(dt);
 
     window.animationFrame.then(update);
@@ -274,7 +297,7 @@ class Othello
     {
       int x = offset + (validIndices[i] % 8) * 64;
       int y = offset + (validIndices[i] ~/ 8) * 64;
-      drawCircle(x, y, radius:10, color:colors[player]);
+      drawCircle(x, y, radius:24, color:alphaColors[player]);
     }
   }
   
