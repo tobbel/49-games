@@ -49,12 +49,24 @@ class GameOfLife
   
   void update(double dt)
   {
-    
+    for (int index = 0; index < life.length; index++)
+    {
+      int x = index % 50;
+      int y = index ~/ 50;
+
+      String color = life[index] ? 'red' : 'green';
+      context.fillStyle = color;
+
+      if (life[index])print('drawing $index');
+      context.fillRect(x * gridSize + 1, y * gridSize + 1, gridSize, gridSize);        
+    }
+    context.fillRect(11, 11, gridSize, gridSize);
   }
   
   Set<int> handledIndices = new Set<int>();
   StreamSubscription mouseMoveStream;
   StreamSubscription mouseUpStream;
+  
   void mouseDown(MouseEvent e)
   {
     handledIndices.clear();
@@ -74,9 +86,8 @@ class GameOfLife
       y = index ~/ 50;
 
       context.fillRect(gridSize * x, gridSize * y, gridSize, gridSize);
+      handledIndices.add(index);
     }
-    
-    handledIndices.add(index);
     
     mouseMoveStream = canvas.onMouseMove.listen(mouseMove);
     mouseUpStream = canvas.onMouseUp.listen(mouseUp);
@@ -92,13 +103,22 @@ class GameOfLife
   void mouseUp(MouseEvent e)
   {
     drawing = false;
+    handledIndices.clear();
     mouseMoveStream.cancel();
     mouseUpStream.cancel();
   }
   
   void mouseMove(MouseEvent e)
   {
-    mouseX = e.client.x;
-    mouseY = e.client.y;
+    Rectangle rect = canvas.getBoundingClientRect();
+    int x = (e.client.x - rect.left).toInt();
+    int y = (e.client.y - rect.top).toInt();
+    int index = getTileUnderMouse(x, y);
+    if (!handledIndices.contains(index))
+    {
+      life[index] = true;
+      handledIndices.add(index);
+      print('$index is true');
+    }    
   }
 }
