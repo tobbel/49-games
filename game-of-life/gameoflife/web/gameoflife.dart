@@ -17,13 +17,14 @@ class GameOfLife
   final int gridSize = 10;
   final int gridWidth = 50;
   final int gridHeight = 50;
-  bool drawing = false;
-  int mouseX = 0;
-  int mouseY = 0;
+
+  Set<int> handledIndices = new Set<int>();
+  StreamSubscription mouseMoveStream;
+  StreamSubscription mouseUpStream;
   
   GameOfLife(this.canvas);
   
-  List<bool> life = new List<bool>.filled(2500, false);
+  List<bool> life = new List<bool>.filled(2500, false); 
   
   void start()
   {
@@ -54,25 +55,22 @@ class GameOfLife
       int x = index % 50;
       int y = index ~/ 50;
 
-      String color = life[index] ? 'red' : 'green';
+      String color = life[index] ? 'green' : 'red';
       context.fillStyle = color;
 
-      if (life[index])print('drawing $index');
-      context.fillRect(x * gridSize + 1, y * gridSize + 1, gridSize, gridSize);        
+      context.fillRect(x * gridSize + 1, y * gridSize + 1, gridSize, gridSize);
     }
-    context.fillRect(11, 11, gridSize, gridSize);
+    
+    // TODO: Accumulate time and update simulation
+
+    window.animationFrame.then(update);
   }
   
-  Set<int> handledIndices = new Set<int>();
-  StreamSubscription mouseMoveStream;
-  StreamSubscription mouseUpStream;
-  
+
   void mouseDown(MouseEvent e)
   {
     handledIndices.clear();
-    drawing = true;
-    mouseX = e.client.x;
-    mouseY = e.client.y;
+
     // Handle tile under mouse, bind move for other pieces
     Rectangle rect = canvas.getBoundingClientRect();
 
@@ -87,6 +85,7 @@ class GameOfLife
 
       context.fillRect(gridSize * x, gridSize * y, gridSize, gridSize);
       handledIndices.add(index);
+      life[index] = true;
     }
     
     mouseMoveStream = canvas.onMouseMove.listen(mouseMove);
@@ -102,7 +101,6 @@ class GameOfLife
   
   void mouseUp(MouseEvent e)
   {
-    drawing = false;
     handledIndices.clear();
     mouseMoveStream.cancel();
     mouseUpStream.cancel();
@@ -116,9 +114,9 @@ class GameOfLife
     int index = getTileUnderMouse(x, y);
     if (!handledIndices.contains(index))
     {
-      life[index] = true;
+      life[index] = !life[index];
       handledIndices.add(index);
-      print('$index is true');
+      //print('$index is true');
     }    
   }
 }
