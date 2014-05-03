@@ -17,8 +17,8 @@ class GameOfLife
   final int gridSize = 10;
   final int gridWidth = 50;
   final int gridHeight = 50;
-
-  Set<int> handledIndices = new Set<int>();
+  bool drawType = true;
+  
   StreamSubscription mouseMoveStream;
   StreamSubscription mouseUpStream;
   
@@ -34,10 +34,10 @@ class GameOfLife
     context.fillStyle = 'black';
     for (int x = 1; x < canvas.width; x++)
     {
-      context.fillRect(x * gridSize, 0, 1, canvas.height);
+      context.fillRect(x * gridSize - 1, 0, 1, canvas.height);
       for (int y = 1; y < canvas.height; y++)
       {
-        context.fillRect(0, y * gridSize, canvas.width, 1);
+        context.fillRect(0, y * gridSize - 1, canvas.width, 1);
       }
     }
     
@@ -47,61 +47,49 @@ class GameOfLife
     // Loop
     window.animationFrame.then(update);
   }
-  
-  void update(double dt)
+  num lastFrameTime = 0;
+  void update(double frameTime)
   {
-    for (int index = 0; index < life.length; index++)
-    {
-      int x = index % 50;
-      int y = index ~/ 50;
-
-      String color = life[index] ? 'green' : 'red';
-      context.fillStyle = color;
-
-      context.fillRect(x * gridSize + 1, y * gridSize + 1, gridSize, gridSize);
-    }
+    num dt = frameTime - lastFrameTime;
+//    print('$dt');
+//    lastFrameTime = frameTime;
+//    for (int index = 0; index < life.length; index++)
+//    {
+//      int x = index % 50;
+//      int y = index ~/ 50;
+//
+//      String color = life[index] ? 'green' : 'red';
+//      context.fillStyle = color;
+//
+//      context.fillRect(x * gridSize + 1, y * gridSize + 1, gridSize, gridSize);
+//    }
     
     // TODO: Accumulate time and update simulation
 
     window.animationFrame.then(update);
   }
   
-
   void mouseDown(MouseEvent e)
   {
-    handledIndices.clear();
-
     // Handle tile under mouse, bind move for other pieces
     Rectangle rect = canvas.getBoundingClientRect();
-
     int x = (e.client.x - rect.left).toInt();
     int y = (e.client.y - rect.top).toInt();
     int index = getTileUnderMouse(x, y);
     
-    if (!handledIndices.contains(index))
-    {
-      x = index % 50;
-      y = index ~/ 50;
-
-      context.fillRect(gridSize * x, gridSize * y, gridSize, gridSize);
-      handledIndices.add(index);
-      life[index] = true;
-    }
+    if (index >= life.length)
+      return;
+    
+    drawType = !life[index];
+    life[index] = drawType;
+    drawTile(index);
     
     mouseMoveStream = canvas.onMouseMove.listen(mouseMove);
     mouseUpStream = canvas.onMouseUp.listen(mouseUp);
   }
   
-  int getTileUnderMouse(int x, int y)
-  {
-    final int gameX = x ~/ gridSize;
-    final int gameY = y ~/ gridSize;
-    return gameY * gridWidth + gameX;
-  }
-  
   void mouseUp(MouseEvent e)
   {
-    handledIndices.clear();
     mouseMoveStream.cancel();
     mouseUpStream.cancel();
   }
@@ -111,12 +99,29 @@ class GameOfLife
     Rectangle rect = canvas.getBoundingClientRect();
     int x = (e.client.x - rect.left).toInt();
     int y = (e.client.y - rect.top).toInt();
+    
     int index = getTileUnderMouse(x, y);
-    if (!handledIndices.contains(index))
-    {
-      life[index] = !life[index];
-      handledIndices.add(index);
-      //print('$index is true');
-    }    
+    if (index >= life.length)
+      return;
+
+    life[index] = drawType;
+    drawTile(index);
+  }
+  
+  int getTileUnderMouse(int x, int y)
+  {
+    final int gameX = x ~/ gridSize;
+    final int gameY = y ~/ gridSize;
+    return gameY * gridWidth + gameX;
+  }
+  
+  void drawTile(int index)
+  {
+    final int x = index % gridWidth;
+    final int y = index ~/ gridHeight;
+    final String color = drawType ? 'black' : 'white';
+    
+    context.fillStyle = color;
+    context.fillRect(gridSize * x, gridSize * y, gridSize - 1, gridSize - 1);
   }
 }
