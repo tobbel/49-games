@@ -18,6 +18,9 @@ class GameOfLife
   final int gridWidth = 50;
   final int gridHeight = 50;
   bool drawType = true;
+
+  num lastFrameTime = 0;
+  num gameTimer = 1;
   
   StreamSubscription mouseMoveStream;
   StreamSubscription mouseUpStream;
@@ -47,26 +50,75 @@ class GameOfLife
     // Loop
     window.animationFrame.then(update);
   }
-  num lastFrameTime = 0;
+  
   void update(double frameTime)
   {
-    num dt = frameTime - lastFrameTime;
-//    print('$dt');
-//    lastFrameTime = frameTime;
-//    for (int index = 0; index < life.length; index++)
-//    {
-//      int x = index % 50;
-//      int y = index ~/ 50;
-//
-//      String color = life[index] ? 'green' : 'red';
-//      context.fillStyle = color;
-//
-//      context.fillRect(x * gridSize + 1, y * gridSize + 1, gridSize, gridSize);
-//    }
+    num dt = (frameTime - lastFrameTime)/1000;
+    gameTimer -= dt;
     
-    // TODO: Accumulate time and update simulation
-
+    if (gameTimer <= 0)
+    {
+      gameTimer = 0.1; 
+      updateGame();
+    }
+    
+    lastFrameTime = frameTime;
     window.animationFrame.then(update);
+  }
+
+  void updateGame()
+  {
+    List<int> changed = [];
+    // Iterate over all
+    for (int index = 0; index < life.length; index++)
+    {
+      int aliveNeighbors = 0;
+      final int x = index % gridWidth;
+      final int y = index ~/ gridWidth;
+      
+      for (int row = -1; row < 2; row++)
+      {
+        for (int col = -1; col < 2; col++)
+        {
+          // if isvalid
+          final int nX = x + col;
+          final int nY = y + row;
+          final int nIndex = nY * gridWidth + nX;
+          if ((row == 0 && col == 0) || (nIndex < 0 || nIndex >= life.length))
+            continue;
+          
+          if (life[nIndex]) aliveNeighbors++;
+        }
+      }
+      
+      final bool alive = life[index];
+      if (aliveNeighbors < 2 && alive)
+      {
+        // Die from starvation
+        changed.add(index);
+      }
+      else if (aliveNeighbors > 3 && alive)
+      {
+        // Die from overpopulation
+        changed.add(index);
+      }
+      else if (aliveNeighbors == 3 && !alive)
+      {
+        // Become alive, reproduction
+        changed.add(index);
+      }
+    }
+    
+    changed.forEach(changeAndRedraw);
+    changed.clear();
+  }
+  
+  void changeAndRedraw(int index)
+  {
+    print('changing $index');
+    life[index] = !life[index];
+    drawType = life[index];
+    drawTile(index);
   }
   
   void mouseDown(MouseEvent e)
