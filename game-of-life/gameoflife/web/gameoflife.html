@@ -7,8 +7,18 @@
     <link rel="stylesheet" href="gameoflife.css">
   </head>
   <body>
+    <div>
+      <input id="startStopButton" type="button" value="Start"/>
+      <input id="stepButton" type="button" value="Step"/>
+      <input id="resetButton" type="button" value="Reset"/>
+    </div>
+    
     <div id="container">
       <canvas id="game" width="500px" height="500px"></canvas>
+    </div>
+    
+    <div>
+      Generation count: <var id="generationCountLabel">
     </div>
 
     <script type="application/dart" src="gameoflife.dart"></script>

@@ -21,6 +21,15 @@ class GameOfLife
 
   num lastFrameTime = 0;
   num gameTimer = 1;
+  int generationCount = 0;
+  
+  bool running = false;
+  
+  InputElement startStopButton;
+  InputElement stepButton;
+  InputElement resetButton;
+  
+  HtmlElement generationCountLabel;
   
   StreamSubscription mouseMoveStream;
   StreamSubscription mouseUpStream;
@@ -31,6 +40,18 @@ class GameOfLife
   
   void start()
   {
+    startStopButton = querySelector("#startStopButton");
+    startStopButton.onClick.listen(startStopClicked);
+    
+    stepButton = querySelector("#stepButton");
+    stepButton.onClick.listen(stepClicked);
+    
+    resetButton = querySelector("#resetButton");
+    resetButton.onClick.listen(resetClicked);
+    
+    generationCountLabel = querySelector("#generationCountLabel");
+    generationCountLabel.text = generationCount.toString();
+    
     context = canvas.context2D;
     
     // Lines
@@ -51,10 +72,43 @@ class GameOfLife
     window.animationFrame.then(update);
   }
   
+  void startStopClicked(MouseEvent e)
+  {
+    running = !running;
+    
+    if (running)
+    {
+      startStopButton.value = "Stop";
+      stepButton.disabled = true;
+    }
+    else
+    {
+      startStopButton.value = "Start";
+      stepButton.disabled = false;
+    }
+  }
+  
+  void stepClicked(MouseEvent e)
+  {
+    updateGame();
+  }
+  
+  void resetClicked(MouseEvent e)
+  {
+    running = false;
+    startStopButton.value = "Start";
+    stepButton.disabled = false;
+    life = new List<bool>.filled(2500, false);
+  }
+  
   void update(double frameTime)
   {
     num dt = (frameTime - lastFrameTime)/1000;
-    gameTimer -= dt;
+    
+    if (running)
+    {
+      gameTimer -= dt;      
+    }
     
     if (gameTimer <= 0)
     {
@@ -80,11 +134,10 @@ class GameOfLife
       {
         for (int col = -1; col < 2; col++)
         {
-          // if isvalid
-          final int nX = x + col;
-          final int nY = y + row;
+          final int nX = (x + col) % gridWidth;
+          final int nY = (y + row) % gridHeight;
           final int nIndex = nY * gridWidth + nX;
-          if ((row == 0 && col == 0) || (nIndex < 0 || nIndex >= life.length))
+          if (row == 0 && col == 0)
             continue;
           
           if (life[nIndex]) aliveNeighbors++;
@@ -111,6 +164,8 @@ class GameOfLife
     
     changed.forEach(changeAndRedraw);
     changed.clear();
+    generationCount++;
+    generationCountLabel.text = generationCount.toString();
   }
   
   void changeAndRedraw(int index)
