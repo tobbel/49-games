@@ -18,9 +18,12 @@ void main() {
 void init() {
   canvas = querySelector('#game');
   game = new SuperPop(canvas);
-
+  
+  canvas.onMouseDown.listen(mouseDown);
+  canvas.onClick.listen(mouseDown);
+  canvas.onMouseMove.listen(mouseMove);
+  
   scheduleMicrotask(game.start);
-
   window.animationFrame.then(update);
 }
 
@@ -30,4 +33,21 @@ void update(double frameTime) {
   
   lastFrameTime = frameTime;
   window.animationFrame.then(update);
+}
+
+void mouseDown(MouseEvent e) {
+  Rectangle rect = canvas.getBoundingClientRect();
+  
+  int x = (e.client.x - rect.left).toInt();
+  int y = (e.client.y - rect.top).toInt();
+      
+  game.mouseDown(x, y);
+}
+
+void mouseMove(MouseEvent e) {
+  Rectangle rect = canvas.getBoundingClientRect();
+
+  int x = (e.client.x - rect.left).toInt();
+  int y = (e.client.y - rect.top).toInt();
+  game.mouseMove(x, y);
 }

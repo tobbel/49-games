@@ -8,8 +8,8 @@ class SuperPop {
   static const int BOARD_WIDTH = 8;
   static const int BOARD_HEIGHT = 8;
   static const int NUM_PIECES = 8;//?
-  static const int PIECE_WIDTH = 32;
-  static const int PIECE_HEIGHT = 32;
+  static const int PIECE_WIDTH = 64; // TODO: Rename to TILE_WIDTH.
+  static const int PIECE_HEIGHT = 64;
   
   List<int> board = [0,0,0,0,0,0,0,0,
                      0,0,0,0,0,0,0,0,
@@ -67,5 +67,15 @@ class SuperPop {
       
       context.fillRect(x * PIECE_WIDTH, y * PIECE_HEIGHT, PIECE_WIDTH, PIECE_HEIGHT);
     }
+  }
+  
+  void mouseMove(int x, int y) {
+    int xi = x ~/ PIECE_WIDTH;
+    int yi = y ~/ PIECE_HEIGHT;
+    print ('xi: $xi, yi: $yi');
+  }
+  
+  void mouseDown(int x, int y) {
+    
   }
 }
