@@ -1,0 +1,4 @@
+name: super_pop
+description: A sample web application
+dependencies:
+  browser: any
