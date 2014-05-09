@@ -22,7 +22,9 @@ class SuperPop {
   
   void start() {
     var rand = new Random();
-    board.forEach((p) => p = rand.nextInt(7));
+    for (int i = 0; i < board.length; i++) {
+      board[i] = rand.nextInt(7);
+    }
     context = canvas.context2D;
   }
   
