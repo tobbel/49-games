@@ -1,6 +1,7 @@
 library super_pop;
 
 import 'dart:html';
+import 'dart:math';
 import 'dart:async';
 
 part 'super_pop.dart';
