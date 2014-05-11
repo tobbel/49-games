@@ -4,7 +4,10 @@ import 'dart:html';
 import 'dart:math';
 import 'dart:async';
 
+import 'package:vector_math/vector_math.dart';
+
 part 'super_pop.dart';
+part 'gem.dart';
 
 SuperPop game;
 CanvasElement canvas;
@@ -20,8 +23,9 @@ void init() {
   game = new SuperPop(canvas);
   
   canvas.onMouseDown.listen(mouseDown);
-  canvas.onClick.listen(mouseDown);
+  canvas.onClick.listen(mouseClick);
   canvas.onMouseMove.listen(mouseMove);
+  canvas.onMouseUp.listen(mouseUp);
   
   scheduleMicrotask(game.start);
   window.animationFrame.then(update);
@@ -36,18 +40,26 @@ void update(double frameTime) {
 }
 
 void mouseDown(MouseEvent e) {
-  Rectangle rect = canvas.getBoundingClientRect();
-  
-  int x = (e.client.x - rect.left).toInt();
-  int y = (e.client.y - rect.top).toInt();
-      
-  game.mouseDown(x, y);
+  game.mouseDown(getMouseCanvasPosition(e));
+}
+
+void mouseClick(MouseEvent e) {
+  // TODO
+  //game.mouseClick(getMouseCanvasPosition(e));
 }
 
 void mouseMove(MouseEvent e) {
+  game.mouseMove(getMouseCanvasPosition(e));
+}
+
+void mouseUp(MouseEvent e) {
+  game.mouseUp(getMouseCanvasPosition(e));
+}
+
+Vector2 getMouseCanvasPosition(MouseEvent e) {
   Rectangle rect = canvas.getBoundingClientRect();
 
-  int x = (e.client.x - rect.left).toInt();
-  int y = (e.client.y - rect.top).toInt();
-  game.mouseMove(x, y);
+  var x = e.client.x - rect.left;
+  var y = e.client.y - rect.top;
+  return new Vector2(x, y);
 }

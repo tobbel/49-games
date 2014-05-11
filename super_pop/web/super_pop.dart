@@ -2,28 +2,27 @@ part of super_pop;
 
 class SuperPop {
   CanvasElement canvas;
-  CanvasRenderingContext context;
+  CanvasRenderingContext2D context;
   SuperPop(this.canvas);
   
   static const int BOARD_WIDTH = 8;
   static const int BOARD_HEIGHT = 8;
-  static const int NUM_PIECES = 8;//?
-  static const int PIECE_WIDTH = 64; // TODO: Rename to TILE_WIDTH.
-  static const int PIECE_HEIGHT = 64;
+  static const int NUM_PIECES = 8;
+  static const int TILE_WIDTH = 64;
+  static const int TILE_HEIGHT = 64;
+  static const int MARKER_LINE_WIDTH = 16;
   
-  List<int> board = [0,0,0,0,0,0,0,0,
-                     0,0,0,0,0,0,0,0,
-                     0,0,0,0,0,0,0,0,
-                     0,0,0,0,0,0,0,0,
-                     0,0,0,0,0,0,0,0,
-                     0,0,0,0,0,0,0,0,
-                     0,0,0,0,0,0,0,0,
-                     0,0,0,0,0,0,0,0];
+  int mouseX = 0;
+  int mouseY = 0;
+  int downIndex = 0;
   
+  List<Gem> gems = new List<Gem>();
   void start() {
     var rand = new Random();
-    for (int i = 0; i < board.length; i++) {
-      board[i] = rand.nextInt(7);
+    for (int index = 0; index < BOARD_WIDTH * BOARD_HEIGHT; index++) {
+      final int x = index % BOARD_WIDTH;
+      final int y = index ~/ BOARD_HEIGHT;
+      gems.add(new Gem(x, y, rand.nextInt(7)));
     }
     context = canvas.context2D;
   }
@@ -33,23 +32,45 @@ class SuperPop {
     draw(dt);
   }
   
+  bool isNeighbor(int indexA, int indexB) {
+    final int startX = indexA % BOARD_WIDTH;
+    final int startY = indexA ~/ BOARD_HEIGHT;
+    final int endX = indexB % BOARD_WIDTH;
+    final int endY = indexB ~/ BOARD_HEIGHT; 
+    
+    // TODO: Better way of doing this by comparing indices
+    // TODO: Also only check up and down
+    for (int row = -1; row < 2; row++) {
+      for (int col = -1; col < 2; col++) {
+        if (row == 0 && col == 0) continue;
+        
+        final int nextX = endX + col;
+        final int nextY = endY + row;
+        
+        if (nextX == startX && nextY == startY) return true;
+      }
+    }
+    return false;
+  }
+  
   void draw(double dt) {
-    for (int index = 0; index < board.length; index++) {
-      int x = index % BOARD_WIDTH;
-      int y = index ~/ BOARD_HEIGHT;
+    // Grid
+    for (int i = 0; i < gems.length; i++) {
+      final int x = gems[i].x;
+      final int y = gems[i].y;
       
-      switch (board[index]) {
+      switch (gems[i].type) {
         case 0:
-          context.fillStyle = 'black';
+          context.fillStyle = 'red';
           break;
         case 1:
-          context.fillStyle = 'red';
+          context.fillStyle = 'green';
           break;
         case 2:
           context.fillStyle = 'blue';
           break;
         case 3:
-          context.fillStyle = 'green';
+          context.fillStyle = 'black';
           break;
         case 4:
           context.fillStyle = 'yellow';
@@ -61,21 +82,61 @@ class SuperPop {
           context.fillStyle = 'orange';
           break;
         case 7:
-          context.fillStyle = 'rgb(100, 149, 237)';
+          context.fillStyle = 'cornflowerblue';
           break;
       }
+      context.fillRect(x * TILE_WIDTH, y * TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT);
+    }
+    
+    // Marker
+    drawMarker(mouseX, mouseY);
+  }
+  
+  void drawMarker(int x, int y)
+  {
+    x *= TILE_WIDTH;
+    y *= TILE_HEIGHT;
+    context.fillStyle = 'rgba(255,0,0,0.5)';
+    context.fillRect(x, y, TILE_WIDTH, MARKER_LINE_WIDTH);
+    context.fillRect(x, y, MARKER_LINE_WIDTH, TILE_HEIGHT);
+    context.fillRect(x + TILE_WIDTH - MARKER_LINE_WIDTH, y, MARKER_LINE_WIDTH, TILE_HEIGHT);
+    context.fillRect(x, y + TILE_HEIGHT - MARKER_LINE_WIDTH, TILE_WIDTH, MARKER_LINE_WIDTH);
+  }
+  
+  void mouseMove(Vector2 position) {
+    position = canvasToGridPosition(position);
+    setMousePosition(position);
+  }
+  
+  void mouseDown(Vector2 position) {
+    position = canvasToGridPosition(position);
+    setMousePosition(position);
+    final int index = mouseY * BOARD_WIDTH + mouseX;
+    
+    // Save index, on release see if release index is neighbor
+    downIndex = index;
+  }
+  
+  void mouseUp(Vector2 position) {
+    position = canvasToGridPosition(position);
+    setMousePosition(position);
+    final int index = mouseY * BOARD_WIDTH + mouseX;
+    print('released');
+    if (isNeighbor(index, downIndex)) {
+      final int type = gems[index].type;
+      gems[index].type = gems[downIndex].type;
+      gems[downIndex].type = type;
       
-      context.fillRect(x * PIECE_WIDTH, y * PIECE_HEIGHT, PIECE_WIDTH, PIECE_HEIGHT);
+      // TODO: Animation -> clearing
     }
   }
   
-  void mouseMove(int x, int y) {
-    int xi = x ~/ PIECE_WIDTH;
-    int yi = y ~/ PIECE_HEIGHT;
-    print ('xi: $xi, yi: $yi');
+  Vector2 canvasToGridPosition(Vector2 canvasPosition) {
+    return new Vector2(min(canvasPosition.x ~/ TILE_WIDTH, BOARD_WIDTH - 1).toDouble(), min(canvasPosition.y ~/ TILE_HEIGHT, BOARD_HEIGHT - 1).toDouble());
   }
   
-  void mouseDown(int x, int y) {
-    
+  void setMousePosition(Vector2 gridPosition) {
+    mouseX = gridPosition.x.toInt();
+    mouseY = gridPosition.y.toInt();
   }
 }
