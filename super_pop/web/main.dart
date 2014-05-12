@@ -22,8 +22,8 @@ void init() {
   canvas = querySelector('#game');
   game = new SuperPop(canvas);
   
+  // mouseClick is handled in mouseDown->mouseUp
   canvas.onMouseDown.listen(mouseDown);
-  canvas.onClick.listen(mouseClick);
   canvas.onMouseMove.listen(mouseMove);
   canvas.onMouseUp.listen(mouseUp);
   
@@ -41,11 +41,6 @@ void update(double frameTime) {
 
 void mouseDown(MouseEvent e) {
   game.mouseDown(getMouseCanvasPosition(e));
-}
-
-void mouseClick(MouseEvent e) {
-  // TODO
-  //game.mouseClick(getMouseCanvasPosition(e));
 }
 
 void mouseMove(MouseEvent e) {

@@ -7,14 +7,14 @@ class SuperPop {
   
   static const int BOARD_WIDTH = 8;
   static const int BOARD_HEIGHT = 8;
-  static const int NUM_PIECES = 8;
+  static const int NUM_PIECES = 7;
   static const int TILE_WIDTH = 64;
   static const int TILE_HEIGHT = 64;
   static const int MARKER_LINE_WIDTH = 16;
   
   int mouseX = 0;
   int mouseY = 0;
-  int downIndex = 0;
+  int downIndex = -1;
   
   List<Gem> gems = new List<Gem>();
   void start() {
@@ -81,9 +81,6 @@ class SuperPop {
         case 6:
           context.fillStyle = 'orange';
           break;
-        case 7:
-          context.fillStyle = 'cornflowerblue';
-          break;
       }
       context.fillRect(x * TILE_WIDTH, y * TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT);
     }
@@ -113,22 +110,34 @@ class SuperPop {
     setMousePosition(position);
     final int index = mouseY * BOARD_WIDTH + mouseX;
     
-    // Save index, on release see if release index is neighbor
-    downIndex = index;
+    // Second click, check for neighbor
+    if (downIndex != -1) {
+      if (isNeighbor(index, downIndex)) {
+        final int type = gems[index].type;
+        gems[index].type = gems[downIndex].type;
+        gems[downIndex].type = type;
+      }
+      downIndex = -1;
+    } else {
+      // Save index, on release see if release index is neighbor
+      downIndex = index;      
+    }
   }
   
   void mouseUp(Vector2 position) {
     position = canvasToGridPosition(position);
     setMousePosition(position);
     final int index = mouseY * BOARD_WIDTH + mouseX;
-    print('released');
-    if (isNeighbor(index, downIndex)) {
+    if (index == downIndex) { 
+      // Just a click; save downIndex
+      return;
+    } else if (isNeighbor(index, downIndex)) {
       final int type = gems[index].type;
       gems[index].type = gems[downIndex].type;
       gems[downIndex].type = type;
-      
       // TODO: Animation -> clearing
     }
+    downIndex = -1;
   }
   
   Vector2 canvasToGridPosition(Vector2 canvasPosition) {
