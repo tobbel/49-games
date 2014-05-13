@@ -16,6 +16,8 @@ class SuperPop {
   int mouseY = 0;
   int downIndex = -1;
   
+  ImageElement img = new ImageElement(src: 'img/red.png', width: 64, height: 64);
+  
   List<Gem> gems = new List<Gem>();
   void start() {
     var rand = new Random();
@@ -38,11 +40,15 @@ class SuperPop {
     final int endX = indexB % BOARD_WIDTH;
     final int endY = indexB ~/ BOARD_HEIGHT; 
     
-    // TODO: Better way of doing this by comparing indices
-    // TODO: Also only check up and down
+    // TODO: Better way of doing this by comparing indices 
+    //       and not hacky
     for (int row = -1; row < 2; row++) {
       for (int col = -1; col < 2; col++) {
         if (row == 0 && col == 0) continue;
+        if (row == -1 && col == -1) continue;
+        if (row == -1 && col == 1) continue;
+        if (row == 1 && col == -1) continue;
+        if (row == 1 && col == 1) continue;
         
         final int nextX = endX + col;
         final int nextY = endY + row;
@@ -61,7 +67,8 @@ class SuperPop {
       
       switch (gems[i].type) {
         case 0:
-          context.fillStyle = 'red';
+          //context.fillStyle = 'red';
+          context.drawImage(img, x * TILE_WIDTH, y * TILE_HEIGHT);
           break;
         case 1:
           context.fillStyle = 'green';
@@ -82,9 +89,13 @@ class SuperPop {
           context.fillStyle = 'orange';
           break;
       }
-      context.fillRect(x * TILE_WIDTH, y * TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT);
+      // TODO: Temp
+      if (gems[i].type != 0) {
+        context.fillRect(x * TILE_WIDTH, y * TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT);        
+      }
     }
     
+    // TODO: Draw marker properly, does not work with images 
     // Marker
     drawMarker(mouseX, mouseY);
   }
@@ -93,7 +104,7 @@ class SuperPop {
   {
     x *= TILE_WIDTH;
     y *= TILE_HEIGHT;
-    context.fillStyle = 'rgba(255,0,0,0.5)';
+    context.fillStyle = 'rgba(0,255,0,0.5)';
     context.fillRect(x, y, TILE_WIDTH, MARKER_LINE_WIDTH);
     context.fillRect(x, y, MARKER_LINE_WIDTH, TILE_HEIGHT);
     context.fillRect(x + TILE_WIDTH - MARKER_LINE_WIDTH, y, MARKER_LINE_WIDTH, TILE_HEIGHT);
@@ -125,6 +136,7 @@ class SuperPop {
   }
   
   void mouseUp(Vector2 position) {
+    if (downIndex == -1) return;
     position = canvasToGridPosition(position);
     setMousePosition(position);
     final int index = mouseY * BOARD_WIDTH + mouseX;
