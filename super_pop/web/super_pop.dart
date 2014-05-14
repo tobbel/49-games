@@ -11,12 +11,17 @@ class SuperPop {
   static const int TILE_WIDTH = 64;
   static const int TILE_HEIGHT = 64;
   static const int MARKER_LINE_WIDTH = 16;
+  static const int SPRITESHEET_WIDTH = 256;
+  static const int SPRITESHEET_HEIGHT = 256;
+  static const int SPRITES_COUNT = SPRITESHEET_WIDTH ~/ TILE_WIDTH;
   
   int mouseX = 0;
   int mouseY = 0;
   int downIndex = -1;
   
-  ImageElement img = new ImageElement(src: 'img/red.png', width: 64, height: 64);
+  ImageElement spriteSheet = new ImageElement(src: 'img/spritesheet.png', 
+                                              width: SPRITESHEET_WIDTH, 
+                                              height: SPRITESHEET_HEIGHT);
   
   List<Gem> gems = new List<Gem>();
   void start() {
@@ -60,42 +65,21 @@ class SuperPop {
   }
   
   void draw(double dt) {
+    // Clear
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    
     // Grid
     for (int i = 0; i < gems.length; i++) {
       final int x = gems[i].x;
       final int y = gems[i].y;
-      
-      switch (gems[i].type) {
-        case 0:
-          //context.fillStyle = 'red';
-          context.drawImage(img, x * TILE_WIDTH, y * TILE_HEIGHT);
-          break;
-        case 1:
-          context.fillStyle = 'green';
-          break;
-        case 2:
-          context.fillStyle = 'blue';
-          break;
-        case 3:
-          context.fillStyle = 'black';
-          break;
-        case 4:
-          context.fillStyle = 'yellow';
-          break;
-        case 5:
-          context.fillStyle = 'grey';
-          break;
-        case 6:
-          context.fillStyle = 'orange';
-          break;
-      }
-      // TODO: Temp
-      if (gems[i].type != 0) {
-        context.fillRect(x * TILE_WIDTH, y * TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT);        
-      }
+      final int sx = (gems[i].type % SPRITES_COUNT) * TILE_WIDTH;
+      final int sy = (gems[i].type ~/ SPRITES_COUNT) * TILE_HEIGHT;
+      final int dx = x * TILE_WIDTH;
+      final int dy = y * TILE_WIDTH;
+      context.drawImageScaledFromSource(spriteSheet, 
+          sx, sy, TILE_WIDTH, TILE_HEIGHT, dx, dy, TILE_WIDTH, TILE_HEIGHT);
     }
     
-    // TODO: Draw marker properly, does not work with images 
     // Marker
     drawMarker(mouseX, mouseY);
   }
