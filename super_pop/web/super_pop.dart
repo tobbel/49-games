@@ -86,13 +86,12 @@ class SuperPop {
   
   void drawMarker(int x, int y)
   {
-    x *= TILE_WIDTH;
-    y *= TILE_HEIGHT;
-    context.fillStyle = 'rgba(0,255,0,0.5)';
-    context.fillRect(x, y, TILE_WIDTH, MARKER_LINE_WIDTH);
-    context.fillRect(x, y, MARKER_LINE_WIDTH, TILE_HEIGHT);
-    context.fillRect(x + TILE_WIDTH - MARKER_LINE_WIDTH, y, MARKER_LINE_WIDTH, TILE_HEIGHT);
-    context.fillRect(x, y + TILE_HEIGHT - MARKER_LINE_WIDTH, TILE_WIDTH, MARKER_LINE_WIDTH);
+    final int sx = (8 % SPRITES_COUNT) * TILE_WIDTH;
+    final int sy = (8 ~/ SPRITES_COUNT) * TILE_HEIGHT;
+    final int dx = x * TILE_WIDTH;
+    final int dy = y * TILE_WIDTH;
+    context.drawImageScaledFromSource(spriteSheet, 
+        sx, sy, TILE_WIDTH, TILE_HEIGHT, dx, dy, TILE_WIDTH, TILE_HEIGHT);
   }
   
   void mouseMove(Vector2 position) {
