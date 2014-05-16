@@ -81,7 +81,14 @@ class SuperPop {
     }
     
     // Marker
-    drawMarker(mouseX, mouseY);
+    if (downIndex != -1) {
+      final int x = downIndex % BOARD_WIDTH;
+      final int y = downIndex ~/ BOARD_HEIGHT;
+      drawMarker(x, y);
+    }
+    else {
+      drawMarker(mouseX, mouseY);
+    }    
   }
   
   void drawMarker(int x, int y)
