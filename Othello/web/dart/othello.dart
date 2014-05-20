@@ -12,6 +12,8 @@ List<int> board = [0,0,0,0,0,0,0,0,
                    0,0,0,0,0,0,0,0];
 void main()
 {
+  // TODO: Win/lose screen
+  // TODO: Controls for resetting game
   CanvasElement canvas = querySelector('#game');
   
   // Create game async as microtask 
@@ -109,11 +111,6 @@ class Othello
         }
       }
     }
-    
-    for (int i = 0; i < validIndices.length; i++)
-    {
-      print('${validIndices[i]}');
-    }
   }
   
   bool isValidPoint(int x, int y)
@@ -128,26 +125,20 @@ class Othello
   
   void mouseDown(MouseEvent e)
   {
-    if (e.client == null) print('client is null');
     Rectangle rect = canvas.getBoundingClientRect();
 
     int x = (e.client.x - rect.left).toInt();
     int y = (e.client.y - rect.top).toInt();
     
-    print('click at $x, $y');
-    
     // Board coords
     int boardX = (x - 16) ~/ 64;
     int boardY = (y - 16) ~/ 64;
-    
-    print('boardcoords: $boardX, $boardY');
 
     Random random = new Random();
     int index = boardY * 8 + boardX;
     
     if (validIndices.contains(index))
     {
-      print('yay!');
       board[index] = player;
       flipTiles(index);
       if (player == 1) player = 2;
@@ -231,7 +222,6 @@ class Othello
                 }
                 if (foundEnd)
                 {
-                  print('foundEnd from $x, $y to $nextNeighborX, $nextNeighborY');
                   toFlip.forEach((f) => allToFlip.add(f));
                 }
               }
