@@ -35,7 +35,9 @@ class SuperPop {
   }
   
   void update(double dt) {
-    // TODO: Accumulate, etc.
+    // TODO: Accumulate.
+    // TODO: Animate.
+    // TODO: Clear and fill from above
     draw(dt);
   }
   
