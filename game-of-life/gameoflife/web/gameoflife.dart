@@ -40,6 +40,7 @@ class GameOfLife
   
   void start()
   {
+    // TODO: Add some cool presets (w/ controls)
     startStopButton = querySelector("#startStopButton");
     startStopButton.onClick.listen(startStopClicked);
     
@@ -99,6 +100,17 @@ class GameOfLife
     startStopButton.value = "Start";
     stepButton.disabled = false;
     life = new List<bool>.filled(2500, false);
+    gameTimer = 0.0;
+    for (int index = 0; index < life.length; index++)
+    {
+      final int x = index % gridWidth;
+      final int y = index ~/ gridHeight;
+     
+      context.fillStyle = 'white';
+      context.fillRect(gridSize * x, gridSize * y, gridSize - 1, gridSize - 1);
+    }
+    generationCount = 0;
+    generationCountLabel.text = generationCount.toString();
   }
   
   void update(double frameTime)
@@ -110,7 +122,7 @@ class GameOfLife
       gameTimer -= dt;      
     }
     
-    if (gameTimer <= 0)
+    if (gameTimer <= 0.0)
     {
       gameTimer = 0.1; 
       updateGame();
@@ -170,7 +182,6 @@ class GameOfLife
   
   void changeAndRedraw(int index)
   {
-    print('changing $index');
     life[index] = !life[index];
     drawType = life[index];
     drawTile(index);
@@ -226,6 +237,8 @@ class GameOfLife
   {
     final int x = index % gridWidth;
     final int y = index ~/ gridHeight;
+    
+    // TODO: Change color based on type (new, stale, dying)
     final String color = drawType ? 'black' : 'white';
     
     context.fillStyle = color;
