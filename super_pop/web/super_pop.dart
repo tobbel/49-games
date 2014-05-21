@@ -7,6 +7,7 @@ class SuperPop {
   
   static const int BOARD_WIDTH = 8;
   static const int BOARD_HEIGHT = 8;
+  static const int BOARD_SIZE = BOARD_WIDTH * BOARD_HEIGHT;
   static const int NUM_PIECES = 7;
   static const int TILE_WIDTH = 64;
   static const int TILE_HEIGHT = 64;
@@ -18,6 +19,7 @@ class SuperPop {
   int mouseX = 0;
   int mouseY = 0;
   int downIndex = -1;
+  // TODO: Invalid gem type
   
   ImageElement spriteSheet = new ImageElement(src: 'img/spritesheet.png', 
                                               width: SPRITESHEET_WIDTH, 
@@ -26,7 +28,7 @@ class SuperPop {
   List<Gem> gems = new List<Gem>();
   void start() {
     var rand = new Random();
-    for (int index = 0; index < BOARD_WIDTH * BOARD_HEIGHT; index++) {
+    for (int index = 0; index < BOARD_SIZE; index++) {
       final int x = index % BOARD_WIDTH;
       final int y = index ~/ BOARD_HEIGHT;
       gems.add(new Gem(x, y, rand.nextInt(7)));
@@ -37,9 +39,63 @@ class SuperPop {
   void update(double dt) {
     // TODO: Accumulate.
     // TODO: Animate.
-    // TODO: Clear and fill from above
+    // TODO: Fill cleared from above
+    removeRows(dt);
     draw(dt);
   }
+  
+  void removeRows(double dt) {
+    List<int> toRemove = new List<int>();
+    for (int index = 0; index < BOARD_SIZE; index++) {
+      final int x = index % BOARD_WIDTH;
+      final int y = index ~/ BOARD_HEIGHT;
+      Gem currentGem = gems[index];
+      // Check right and down. Okay since we start at top left.
+      // Right
+      int offset = 1;
+      int nX = x + offset;
+      int nY = y;
+      List<int> matches = new List<int>();
+      matches.add(index);
+      while(isValid(nX, nY) && getGemAt(nX, nY).type == currentGem.type) {
+        matches.add(nY * BOARD_WIDTH + nX);
+        nX++;
+      }
+      if (matches.length > 2) {
+        toRemove.addAll(matches);
+      }
+      matches.clear();
+      
+      // Down
+      offset = 1;
+      nX = x;
+      nY = y + offset;
+      matches.add(index);
+      while (isValid(nX, nY) && getGemAt(nX, nY).type == currentGem.type) {
+        matches.add(nY * BOARD_WIDTH + nX);
+        nY++;
+      }
+      if (matches.length > 2) {
+        toRemove.addAll(matches);
+      }
+      matches.clear();
+    }
+    
+    for (int i = 0; i < toRemove.length; i++) {
+      gems[toRemove[i]] = new Gem(toRemove[i] % BOARD_WIDTH, toRemove[i] ~/ BOARD_HEIGHT, 9);
+    }
+  }
+  
+  Gem getGemAt(int x, int y) {
+    final int index = y * BOARD_WIDTH + x;
+    if (isValidIndex(index)) {
+      return gems[index];
+    }
+    return null;
+  }
+  
+  bool isValid(int x, int y) => x < BOARD_WIDTH && y < BOARD_WIDTH;
+  bool isValidIndex(int index) => index < BOARD_SIZE;
   
   bool isNeighbor(int indexA, int indexB) {
     final int startX = indexA % BOARD_WIDTH;
