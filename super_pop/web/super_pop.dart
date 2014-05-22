@@ -21,13 +21,14 @@ class SuperPop {
   int downIndex = -1;
   // TODO: Invalid gem type
   
+  var rand = new Random();
+  
   ImageElement spriteSheet = new ImageElement(src: 'img/spritesheet.png', 
                                               width: SPRITESHEET_WIDTH, 
                                               height: SPRITESHEET_HEIGHT);
   
   List<Gem> gems = new List<Gem>();
   void start() {
-    var rand = new Random();
     for (int index = 0; index < BOARD_SIZE; index++) {
       final int x = index % BOARD_WIDTH;
       final int y = index ~/ BOARD_HEIGHT;
@@ -41,7 +42,40 @@ class SuperPop {
     // TODO: Animate.
     // TODO: Fill cleared from above
     removeRows(dt);
+    drop(dt);
     draw(dt);
+  }
+  
+  void drop(double dt) {
+    // Go through entire board
+    // For each that is invalid, do this:
+    //  Swap with the one above you until you are at the top, or
+    //  The one above you is invalid as well
+    for (int index = 0; index < BOARD_SIZE; index++) {
+      int x = index % BOARD_WIDTH;
+      int y = index ~/ BOARD_HEIGHT;
+      
+      if (isValid(x, y) && getGemAt(x, y).type == -1) {
+        int nX = x;
+        int nY = y - 1;
+        while (isValid(nX, nY) && getGemAt(nX, nY).type != -1) {
+          int nIndex = nY * BOARD_WIDTH + x;
+          gems[index].type = getGemAt(nX, nY).type;
+          gems[nIndex].type = -1;
+          nY--;
+          index -= BOARD_WIDTH;
+        }
+      }
+    }
+    
+    for (int index = 0; index < BOARD_SIZE; index++) {
+      final int x = index % BOARD_WIDTH;
+      final int y = index ~/ BOARD_HEIGHT;
+      if (isValid(x, y) && getGemAt(x, y).type == -1) {
+        print ('generated new value at $x, $y');
+        gems[index] = new Gem(x, y, rand.nextInt(7));
+      }
+    }
   }
   
   void removeRows(double dt) {
@@ -82,7 +116,8 @@ class SuperPop {
     }
     
     for (int i = 0; i < toRemove.length; i++) {
-      gems[toRemove[i]] = new Gem(toRemove[i] % BOARD_WIDTH, toRemove[i] ~/ BOARD_HEIGHT, 9);
+      // TODO: -1 renders to 3, make Gem.type class w/ relevant info?
+      gems[toRemove[i]] = new Gem(toRemove[i] % BOARD_WIDTH, toRemove[i] ~/ BOARD_HEIGHT, -1);
     }
   }
   
@@ -94,8 +129,8 @@ class SuperPop {
     return null;
   }
   
-  bool isValid(int x, int y) => x < BOARD_WIDTH && y < BOARD_WIDTH;
-  bool isValidIndex(int index) => index < BOARD_SIZE;
+  bool isValid(int x, int y) => x < BOARD_WIDTH && y < BOARD_WIDTH && x >= 0 && y >= 0;
+  bool isValidIndex(int index) => index < BOARD_SIZE && index >= 0;
   
   bool isNeighbor(int indexA, int indexB) {
     final int startX = indexA % BOARD_WIDTH;
@@ -143,8 +178,7 @@ class SuperPop {
       final int x = downIndex % BOARD_WIDTH;
       final int y = downIndex ~/ BOARD_HEIGHT;
       drawMarker(x, y);
-    }
-    else {
+    } else {
       drawMarker(mouseX, mouseY);
     }    
   }
