@@ -59,9 +59,13 @@ class SuperPop {
         int nX = x;
         int nY = y - 1;
         while (isValid(nX, nY) && getGemAt(nX, nY).type != -1) {
-          int nIndex = nY * BOARD_WIDTH + x;
+          int nIndex = nY * BOARD_WIDTH + nX;
           gems[index].type = getGemAt(nX, nY).type;
           gems[nIndex].type = -1;
+          // TODO: Instead of flipping, tell all above not -1 to move down.
+          // TODO: TargetType as well, set when animation is done?
+          //gems[index].moveTo(nX, nY);
+          //gems[nIndex].moveTo(x, y);
           nY--;
           index -= BOARD_WIDTH;
         }
@@ -116,7 +120,7 @@ class SuperPop {
     }
     
     for (int i = 0; i < toRemove.length; i++) {
-      // TODO: -1 renders to 3, make Gem.type class w/ relevant info?
+      // TODO: -1 renders to 3, make Gem.type class w/ relevant info (or just add to gem)?
       gems[toRemove[i]] = new Gem(toRemove[i] % BOARD_WIDTH, toRemove[i] ~/ BOARD_HEIGHT, -1);
     }
   }
@@ -163,12 +167,12 @@ class SuperPop {
     
     // Grid
     for (int i = 0; i < gems.length; i++) {
-      final int x = gems[i].x;
-      final int y = gems[i].y;
+      final double x = gems[i].renderX;
+      final double y = gems[i].renderY;
       final int sx = (gems[i].type % SPRITES_COUNT) * TILE_WIDTH;
       final int sy = (gems[i].type ~/ SPRITES_COUNT) * TILE_HEIGHT;
-      final int dx = x * TILE_WIDTH;
-      final int dy = y * TILE_WIDTH;
+      final double dx = x * TILE_WIDTH;
+      final double dy = y * TILE_WIDTH;
       context.drawImageScaledFromSource(spriteSheet, 
           sx, sy, TILE_WIDTH, TILE_HEIGHT, dx, dy, TILE_WIDTH, TILE_HEIGHT);
     }
