@@ -44,6 +44,10 @@ class SuperPop {
     removeRows(dt);
     drop(dt);
     draw(dt);
+    for (int i = 0; i < gems.length; i++) {
+      if (gems[i] != null)
+        gems[i].update(dt);
+    }
   }
   
   void drop(double dt) {
@@ -60,14 +64,15 @@ class SuperPop {
         int nY = y - 1;
         while (isValid(nX, nY) && getGemAt(nX, nY).type != -1) {
           int nIndex = nY * BOARD_WIDTH + nX;
-          gems[index].type = getGemAt(nX, nY).type;
-          gems[nIndex].type = -1;
+          //gems[index].type = getGemAt(nX, nY).type;
+          //gems[nIndex].type = -1;
           // TODO: Instead of flipping, tell all above not -1 to move down.
           // TODO: TargetType as well, set when animation is done?
-          //gems[index].moveTo(nX, nY);
+          gems[index].moveTo(nX, nY);
           //gems[nIndex].moveTo(x, y);
           nY--;
           index -= BOARD_WIDTH;
+          break;
         }
       }
     }
