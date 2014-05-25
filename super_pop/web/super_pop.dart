@@ -41,8 +41,8 @@ class SuperPop {
     // TODO: Accumulate.
     // TODO: Animate.
     // TODO: Fill cleared from above
-    removeRows(dt);
-    drop(dt);
+    //removeRows(dt);
+    //drop(dt);
     draw(dt);
     for (int i = 0; i < gems.length; i++) {
       if (gems[i] != null)
@@ -64,11 +64,11 @@ class SuperPop {
         int nY = y - 1;
         while (isValid(nX, nY) && getGemAt(nX, nY).type != -1) {
           int nIndex = nY * BOARD_WIDTH + nX;
-          //gems[index].type = getGemAt(nX, nY).type;
-          //gems[nIndex].type = -1;
+          gems[index].type = getGemAt(nX, nY).type;
+          gems[nIndex].type = -1;
           // TODO: Instead of flipping, tell all above not -1 to move down.
           // TODO: TargetType as well, set when animation is done?
-          gems[index].moveTo(nX, nY);
+          //gems[index].moveTo(nX, nY);
           //gems[nIndex].moveTo(x, y);
           nY--;
           index -= BOARD_WIDTH;
@@ -215,9 +215,9 @@ class SuperPop {
     // Second click, check for neighbor
     if (downIndex != -1) {
       if (isNeighbor(index, downIndex)) {
-        final int type = gems[index].type;
-        gems[index].type = gems[downIndex].type;
-        gems[downIndex].type = type;
+        // TODO: Factor out to swap function
+        gems[index].moveToIndex(downIndex);
+        gems[downIndex].moveToIndex(index);
       }
       downIndex = -1;
     } else {
@@ -235,10 +235,10 @@ class SuperPop {
       // Just a click; save downIndex
       return;
     } else if (isNeighbor(index, downIndex)) {
-      final int type = gems[index].type;
-      gems[index].type = gems[downIndex].type;
-      gems[downIndex].type = type;
-      // TODO: Animation -> clearing
+      // TODO: Factor out to swap function
+      gems[index].moveToIndex(downIndex);
+      gems[downIndex].moveToIndex(index);
+      // TODO: IsSwapping or the like, to hide marker and ignore input
     }
     downIndex = -1;
   }
