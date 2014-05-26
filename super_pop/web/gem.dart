@@ -5,10 +5,11 @@ class Gem {
   int tX = -1;
   int tY = -1;
   double moveTimer = 0.0;
-  double moveTime = 0.25;
+  double moveTime = 0.15;
   double renderX = 0.0;
   double renderY = 0.0;
   int type = -1;
+  var swapDoneCallback;
   Gem(this.x, this.y, this.type) {
     renderX = this.x.toDouble();
     renderY = this.y.toDouble();
@@ -16,16 +17,18 @@ class Gem {
   
   // TODO: Use named optionals for x/y/index 
   // instead of hoping polymorphism will work in dart
-  void moveTo(int x, int y) {
+  void moveTo(int x, int y, var cb) {
     tX = x; 
     tY = y;
     moveTimer = moveTime;
+    swapDoneCallback = cb;
   }
   
-  void moveToIndex(int index) {
+  void moveToIndex(int index, var cb) {
     tX = index % SuperPop.BOARD_WIDTH;
     tY = index ~/ SuperPop.BOARD_HEIGHT;
     moveTimer = moveTime;
+    swapDoneCallback = cb;
   }
   
   void update(double dt) {
@@ -40,8 +43,11 @@ class Gem {
       
       if (moveTimer <= 0.0) {
         moveTimer = 0.0;
+        x = tX;
+        y = tY;
         tX = -1;
         tY = -1;
+        swapDoneCallback(this);
         // TODO: Done moving, callback to SuperPop to swap for real in gems list
         // And clear, or move back, etc.
       }

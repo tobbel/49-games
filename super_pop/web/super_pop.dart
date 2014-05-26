@@ -19,6 +19,7 @@ class SuperPop {
   int mouseX = 0;
   int mouseY = 0;
   int downIndex = -1;
+  bool swapping = false;
   // TODO: Invalid gem type
   
   var rand = new Random();
@@ -28,6 +29,8 @@ class SuperPop {
                                               height: SPRITESHEET_HEIGHT);
   
   List<Gem> gems = new List<Gem>();
+  List<Gem> swappedGems = new List<Gem>();
+  
   void start() {
     for (int index = 0; index < BOARD_SIZE; index++) {
       final int x = index % BOARD_WIDTH;
@@ -43,11 +46,31 @@ class SuperPop {
     // TODO: Fill cleared from above
     //removeRows(dt);
     //drop(dt);
+    updateSwap(dt);
     draw(dt);
     for (int i = 0; i < gems.length; i++) {
       if (gems[i] != null)
         gems[i].update(dt);
     }
+  }
+  
+  void updateSwap(double dt) {
+    // TODO: Move timers for gems to here? (updateGems)
+    // TODO: More stable solution (this only works for 2, is quite ugly)
+    if (swappedGems.length == 2) {
+      // TODO: Check if swapped gems are matchable, confirm if so or swap back
+      int i0 = gems.indexOf(swappedGems[0]);
+      int i1 = gems.indexOf(swappedGems[1]);
+      Gem g0 = gems[i0];
+      gems[i0] = gems[i1];
+      gems[i1] = g0;
+      swappedGems.clear();
+      swapping = false;
+    }
+  }
+  
+  void swapDone(Gem cbGem) {
+    swappedGems.add(cbGem);
   }
   
   void drop(double dt) {
@@ -81,7 +104,6 @@ class SuperPop {
       final int x = index % BOARD_WIDTH;
       final int y = index ~/ BOARD_HEIGHT;
       if (isValid(x, y) && getGemAt(x, y).type == -1) {
-        print ('generated new value at $x, $y');
         gems[index] = new Gem(x, y, rand.nextInt(7));
       }
     }
@@ -194,6 +216,8 @@ class SuperPop {
   
   void drawMarker(int x, int y)
   {
+    if (swapping) return;
+    
     final int sx = (8 % SPRITES_COUNT) * TILE_WIDTH;
     final int sy = (8 ~/ SPRITES_COUNT) * TILE_HEIGHT;
     final int dx = x * TILE_WIDTH;
@@ -216,8 +240,9 @@ class SuperPop {
     if (downIndex != -1) {
       if (isNeighbor(index, downIndex)) {
         // TODO: Factor out to swap function
-        gems[index].moveToIndex(downIndex);
-        gems[downIndex].moveToIndex(index);
+        gems[index].moveToIndex(downIndex, swapDone);
+        gems[downIndex].moveToIndex(index, swapDone);
+        swapping = true;
       }
       downIndex = -1;
     } else {
@@ -236,9 +261,9 @@ class SuperPop {
       return;
     } else if (isNeighbor(index, downIndex)) {
       // TODO: Factor out to swap function
-      gems[index].moveToIndex(downIndex);
-      gems[downIndex].moveToIndex(index);
-      // TODO: IsSwapping or the like, to hide marker and ignore input
+      gems[index].moveToIndex(downIndex, swapDone);
+      gems[downIndex].moveToIndex(index, swapDone);
+      swapping = true;
     }
     downIndex = -1;
   }
