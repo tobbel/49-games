@@ -59,13 +59,22 @@ class SuperPop {
     // TODO: More stable solution (this only works for 2, is quite ugly)
     if (swappedGems.length == 2) {
       // TODO: Check if swapped gems are matchable, confirm if so or swap back
-      int i0 = gems.indexOf(swappedGems[0]);
-      int i1 = gems.indexOf(swappedGems[1]);
-      Gem g0 = gems[i0];
-      gems[i0] = gems[i1];
-      gems[i1] = g0;
-      swappedGems.clear();
-      swapping = false;
+      if (true) {
+        int i0 = gems.indexOf(swappedGems[0]);
+        int i1 = gems.indexOf(swappedGems[1]);
+        gems[i1].moveToIndex(i1, swapDone);
+        gems[i0].moveToIndex(i0, swapDone);
+        swappedGems.clear();
+        swapping = false;
+      } else {
+        int i0 = gems.indexOf(swappedGems[0]);
+        int i1 = gems.indexOf(swappedGems[1]);
+        Gem g0 = gems[i0];
+        gems[i0] = gems[i1];
+        gems[i1] = g0;
+        swappedGems.clear();
+        swapping = false;
+      }
     }
   }
   
