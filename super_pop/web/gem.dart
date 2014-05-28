@@ -9,6 +9,7 @@ class Gem {
   double renderX = 0.0;
   double renderY = 0.0;
   int type = -1;
+  bool returnOnSwap = false;
   var swapDoneCallback;
   Gem(this.x, this.y, this.type) {
     renderX = this.x.toDouble();
@@ -29,6 +30,14 @@ class Gem {
     tY = index ~/ SuperPop.BOARD_HEIGHT;
     moveTimer = moveTime;
     swapDoneCallback = cb;
+  }
+  
+  void moveToIndexAndBack(int index, var cb) {
+    tX = index % SuperPop.BOARD_WIDTH;
+    tY = index ~/ SuperPop.BOARD_HEIGHT;
+    moveTimer = moveTime;
+    swapDoneCallback = cb;
+    returnOnSwap = true;
   }
   
   void update(double dt) {

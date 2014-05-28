@@ -248,10 +248,7 @@ class SuperPop {
     // Second click, check for neighbor
     if (downIndex != -1) {
       if (isNeighbor(index, downIndex)) {
-        // TODO: Factor out to swap function
-        gems[index].moveToIndex(downIndex, swapDone);
-        gems[downIndex].moveToIndex(index, swapDone);
-        swapping = true;
+        trySwap(index, downIndex);
       }
       downIndex = -1;
     } else {
@@ -269,12 +266,18 @@ class SuperPop {
       // Just a click; save downIndex
       return;
     } else if (isNeighbor(index, downIndex)) {
-      // TODO: Factor out to swap function
-      gems[index].moveToIndex(downIndex, swapDone);
-      gems[downIndex].moveToIndex(index, swapDone);
-      swapping = true;
+      trySwap(index, downIndex);
     }
     downIndex = -1;
+  }
+  
+  void trySwap(int indexA, int indexB) {
+    // TODO: Check if swap is valid (i.e. will result in a drop).
+    // If valid, use moveTo.
+    // If not, use moveToAndBack
+    gems[indexA].moveToIndex(indexB, swapDone);
+    gems[indexB].moveToIndex(indexA, swapDone);
+    swapping = true;
   }
   
   Vector2 canvasToGridPosition(Vector2 canvasPosition) {
