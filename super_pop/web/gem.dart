@@ -39,27 +39,4 @@ class Gem {
     swapDoneCallback = cb;
     returnOnSwap = true;
   }
-  
-  void update(double dt) {
-    if (moveTimer > 0.0) {
-      moveTimer -= dt;
-      
-      // TODO: Interpolate, linear looks boring
-      // 1 -> 0
-      final double moveFraction = moveTimer / moveTime;
-      renderX = moveFraction * x + (1 - moveFraction) * tX;
-      renderY = moveFraction * y + (1 - moveFraction) * tY;
-      
-      if (moveTimer <= 0.0) {
-        moveTimer = 0.0;
-        x = tX;
-        y = tY;
-        tX = -1;
-        tY = -1;
-        swapDoneCallback(this);
-        // TODO: Done moving, callback to SuperPop to swap for real in gems list
-        // And clear, or move back, etc.
-      }
-    }
-  }
 }

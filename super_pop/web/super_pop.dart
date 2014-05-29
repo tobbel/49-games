@@ -46,16 +46,40 @@ class SuperPop {
     // TODO: Fill cleared from above
     //removeRows(dt);
     //drop(dt);
+    updateGems(dt);
     updateSwap(dt);
     draw(dt);
+  }
+  
+  void updateGems(double dt) {
     for (int i = 0; i < gems.length; i++) {
-      if (gems[i] != null)
-        gems[i].update(dt);
+      if (gems[i] == null) continue;
+      Gem gem = gems[i];
+      
+      if (gem.moveTimer > 0.0) {
+        gem.moveTimer -= dt;
+        
+        // TODO: Interpolate, linear looks boring
+        // 1 -> 0
+        final double moveFraction = gem.moveTimer / gem.moveTime;
+        gem.renderX = moveFraction * gem.x + (1 - moveFraction) * gem.tX;
+        gem.renderY = moveFraction * gem.y + (1 - moveFraction) * gem.tY;
+        
+        if (gem.moveTimer <= 0.0) {
+          gem.moveTimer = 0.0;
+          gem.x = gem.tX;
+          gem.y = gem.tY;
+          gem.tX = -1;
+          gem.tY = -1;
+          gem.swapDoneCallback(gem);
+          // TODO: Done moving, callback to SuperPop to swap for real in gems list
+          // And clear, or move back, etc.
+        }
+      }
     }
   }
   
   void updateSwap(double dt) {
-    // TODO: Move timers for gems to here? (updateGems)
     // TODO: More stable solution (this only works for 2, is quite ugly)
     if (swappedGems.length == 2) {
       // TODO: Check if swapped gems are matchable, confirm if so or swap back
