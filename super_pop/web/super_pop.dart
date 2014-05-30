@@ -61,7 +61,8 @@ class SuperPop {
         
         // TODO: Interpolate, linear looks boring
         // 1 -> 0
-        final double moveFraction = gem.moveTimer / gem.moveTime;
+        double moveFraction = gem.moveTimer / gem.moveTime;
+        moveFraction *= moveFraction;
         gem.renderX = moveFraction * gem.x + (1 - moveFraction) * gem.tX;
         gem.renderY = moveFraction * gem.y + (1 - moveFraction) * gem.tY;
         
