@@ -23,21 +23,14 @@ class SuperPop {
   // TODO: Invalid gem type
   
   var rand = new Random();
-  
+  Board board;
   ImageElement spriteSheet = new ImageElement(src: 'img/spritesheet.png', 
                                               width: SPRITESHEET_WIDTH, 
                                               height: SPRITESHEET_HEIGHT);
   
-  List<Gem> gems = new List<Gem>();
-  List<Gem> swappedGems = new List<Gem>();
-  
   void start() {
-    for (int index = 0; index < BOARD_SIZE; index++) {
-      final int x = index % BOARD_WIDTH;
-      final int y = index ~/ BOARD_HEIGHT;
-      gems.add(new Gem(x, y, rand.nextInt(7)));
-    }
     context = canvas.context2D;
+    board = new Board(BOARD_WIDTH, BOARD_HEIGHT);
   }
   
   void update(double dt) {
@@ -46,156 +39,129 @@ class SuperPop {
     // TODO: Fill cleared from above
     //removeRows(dt);
     //drop(dt);
-    updateGems(dt);
-    updateSwap(dt);
+    board.update(dt);
+    //updateSwap(dt);
     draw(dt);
   }
   
   void updateGems(double dt) {
-    for (int i = 0; i < gems.length; i++) {
-      if (gems[i] == null) continue;
-      Gem gem = gems[i];
-      
-      if (gem.moveTimer > 0.0) {
-        gem.moveTimer -= dt;
-        
-        // TODO: Interpolate, linear looks boring
-        // 1 -> 0
-        double moveFraction = gem.moveTimer / gem.moveTime;
-        moveFraction *= moveFraction;
-        gem.renderX = moveFraction * gem.x + (1 - moveFraction) * gem.tX;
-        gem.renderY = moveFraction * gem.y + (1 - moveFraction) * gem.tY;
-        
-        if (gem.moveTimer <= 0.0) {
-          gem.moveTimer = 0.0;
-          gem.x = gem.tX;
-          gem.y = gem.tY;
-          gem.tX = -1;
-          gem.tY = -1;
-          gem.swapDoneCallback(gem);
-          // TODO: Done moving, callback to SuperPop to swap for real in gems list
-          // And clear, or move back, etc.
-        }
-      }
-    }
+//    for (int i = 0; i < gems.length; i++) {
+//      if (gems[i] == null) continue;
+//      Gem gem = gems[i];
+//      
+//      if (gem.moveTimer > 0.0) {
+//        gem.moveTimer -= dt;
+//        
+//        // TODO: Interpolate, linear looks boring
+//        // 1 -> 0
+//        double moveFraction = gem.moveTimer / gem.moveTime;
+//        moveFraction *= moveFraction;
+//        gem.renderX = moveFraction * gem.x + (1 - moveFraction) * gem.tX;
+//        gem.renderY = moveFraction * gem.y + (1 - moveFraction) * gem.tY;
+//        
+//        if (gem.moveTimer <= 0.0) {
+//          gem.moveTimer = 0.0;
+//          gem.x = gem.tX;
+//          gem.y = gem.tY;
+//          gem.tX = -1;
+//          gem.tY = -1;
+//          gem.swapDoneCallback(gem);
+//          // TODO: Done moving, callback to SuperPop to swap for real in gems list
+//          // And clear, or move back, etc.
+//        }
+//      }
+//    }
   }
   
-  void updateSwap(double dt) {
-    // TODO: More stable solution (this only works for 2, is quite ugly)
-    if (swappedGems.length == 2) {
-      // TODO: Check if swapped gems are matchable, confirm if so or swap back
-      if (true) {
-        int i0 = gems.indexOf(swappedGems[0]);
-        int i1 = gems.indexOf(swappedGems[1]);
-        gems[i1].moveToIndex(i1, swapDone);
-        gems[i0].moveToIndex(i0, swapDone);
-        swappedGems.clear();
-        swapping = false;
-      } else {
-        int i0 = gems.indexOf(swappedGems[0]);
-        int i1 = gems.indexOf(swappedGems[1]);
-        Gem g0 = gems[i0];
-        gems[i0] = gems[i1];
-        gems[i1] = g0;
-        swappedGems.clear();
-        swapping = false;
-      }
-    }
-  }
+//  void drop(double dt) {
+//    // Go through entire board
+//    // For each that is invalid, do this:
+//    //  Swap with the one above you until you are at the top, or
+//    //  The one above you is invalid as well
+//    for (int index = 0; index < BOARD_SIZE; index++) {
+//      int x = index % BOARD_WIDTH;
+//      int y = index ~/ BOARD_HEIGHT;
+//      
+//      if (isValid(x, y) && getGemAt(x, y).type == -1) {
+//        int nX = x;
+//        int nY = y - 1;
+//        while (isValid(nX, nY) && getGemAt(nX, nY).type != -1) {
+//          int nIndex = nY * BOARD_WIDTH + nX;
+//          gems[index].type = getGemAt(nX, nY).type;
+//          gems[nIndex].type = -1;
+//          // TODO: Instead of flipping, tell all above not -1 to move down.
+//          // TODO: TargetType as well, set when animation is done?
+//          //gems[index].moveTo(nX, nY);
+//          //gems[nIndex].moveTo(x, y);
+//          nY--;
+//          index -= BOARD_WIDTH;
+//          break;
+//        }
+//      }
+//    }
+//    
+//    for (int index = 0; index < BOARD_SIZE; index++) {
+//      final int x = index % BOARD_WIDTH;
+//      final int y = index ~/ BOARD_HEIGHT;
+//      if (isValid(x, y) && getGemAt(x, y).type == -1) {
+//        gems[index] = new Gem(x, y, rand.nextInt(7));
+//      }
+//    }
+//  }
+//  
+//  void removeRows(double dt) {
+//    List<int> toRemove = new List<int>();
+//    for (int index = 0; index < BOARD_SIZE; index++) {
+//      final int x = index % BOARD_WIDTH;
+//      final int y = index ~/ BOARD_HEIGHT;
+//      Gem currentGem = gems[index];
+//      // Check right and down. Okay since we start at top left.
+//      // Right
+//      int offset = 1;
+//      int nX = x + offset;
+//      int nY = y;
+//      List<int> matches = new List<int>();
+//      matches.add(index);
+//      while(isValid(nX, nY) && getGemAt(nX, nY).type == currentGem.type) {
+//        matches.add(nY * BOARD_WIDTH + nX);
+//        nX++;
+//      }
+//      if (matches.length > 2) {
+//        toRemove.addAll(matches);
+//      }
+//      matches.clear();
+//      
+//      // Down
+//      offset = 1;
+//      nX = x;
+//      nY = y + offset;
+//      matches.add(index);
+//      while (isValid(nX, nY) && getGemAt(nX, nY).type == currentGem.type) {
+//        matches.add(nY * BOARD_WIDTH + nX);
+//        nY++;
+//      }
+//      if (matches.length > 2) {
+//        toRemove.addAll(matches);
+//      }
+//      matches.clear();
+//    }
+//    
+//    for (int i = 0; i < toRemove.length; i++) {
+//      // TODO: -1 renders to 3, make Gem.type class w/ relevant info (or just add to gem)?
+//      gems[toRemove[i]] = new Gem(toRemove[i] % BOARD_WIDTH, toRemove[i] ~/ BOARD_HEIGHT, -1);
+//    }
+//  }
   
-  void swapDone(Gem cbGem) {
-    swappedGems.add(cbGem);
-  }
+//  Gem getGemAt(int x, int y) {
+//    final int index = y * BOARD_WIDTH + x;
+//    if (isValidIndex(index)) {
+//      return gems[index];
+//    }
+//    return null;
+//  }
   
-  void drop(double dt) {
-    // Go through entire board
-    // For each that is invalid, do this:
-    //  Swap with the one above you until you are at the top, or
-    //  The one above you is invalid as well
-    for (int index = 0; index < BOARD_SIZE; index++) {
-      int x = index % BOARD_WIDTH;
-      int y = index ~/ BOARD_HEIGHT;
-      
-      if (isValid(x, y) && getGemAt(x, y).type == -1) {
-        int nX = x;
-        int nY = y - 1;
-        while (isValid(nX, nY) && getGemAt(nX, nY).type != -1) {
-          int nIndex = nY * BOARD_WIDTH + nX;
-          gems[index].type = getGemAt(nX, nY).type;
-          gems[nIndex].type = -1;
-          // TODO: Instead of flipping, tell all above not -1 to move down.
-          // TODO: TargetType as well, set when animation is done?
-          //gems[index].moveTo(nX, nY);
-          //gems[nIndex].moveTo(x, y);
-          nY--;
-          index -= BOARD_WIDTH;
-          break;
-        }
-      }
-    }
-    
-    for (int index = 0; index < BOARD_SIZE; index++) {
-      final int x = index % BOARD_WIDTH;
-      final int y = index ~/ BOARD_HEIGHT;
-      if (isValid(x, y) && getGemAt(x, y).type == -1) {
-        gems[index] = new Gem(x, y, rand.nextInt(7));
-      }
-    }
-  }
-  
-  void removeRows(double dt) {
-    List<int> toRemove = new List<int>();
-    for (int index = 0; index < BOARD_SIZE; index++) {
-      final int x = index % BOARD_WIDTH;
-      final int y = index ~/ BOARD_HEIGHT;
-      Gem currentGem = gems[index];
-      // Check right and down. Okay since we start at top left.
-      // Right
-      int offset = 1;
-      int nX = x + offset;
-      int nY = y;
-      List<int> matches = new List<int>();
-      matches.add(index);
-      while(isValid(nX, nY) && getGemAt(nX, nY).type == currentGem.type) {
-        matches.add(nY * BOARD_WIDTH + nX);
-        nX++;
-      }
-      if (matches.length > 2) {
-        toRemove.addAll(matches);
-      }
-      matches.clear();
-      
-      // Down
-      offset = 1;
-      nX = x;
-      nY = y + offset;
-      matches.add(index);
-      while (isValid(nX, nY) && getGemAt(nX, nY).type == currentGem.type) {
-        matches.add(nY * BOARD_WIDTH + nX);
-        nY++;
-      }
-      if (matches.length > 2) {
-        toRemove.addAll(matches);
-      }
-      matches.clear();
-    }
-    
-    for (int i = 0; i < toRemove.length; i++) {
-      // TODO: -1 renders to 3, make Gem.type class w/ relevant info (or just add to gem)?
-      gems[toRemove[i]] = new Gem(toRemove[i] % BOARD_WIDTH, toRemove[i] ~/ BOARD_HEIGHT, -1);
-    }
-  }
-  
-  Gem getGemAt(int x, int y) {
-    final int index = y * BOARD_WIDTH + x;
-    if (isValidIndex(index)) {
-      return gems[index];
-    }
-    return null;
-  }
-  
-  bool isValid(int x, int y) => x < BOARD_WIDTH && y < BOARD_WIDTH && x >= 0 && y >= 0;
-  bool isValidIndex(int index) => index < BOARD_SIZE && index >= 0;
+//  bool isValid(int x, int y) => x < BOARD_WIDTH && y < BOARD_WIDTH && x >= 0 && y >= 0;
+//  bool isValidIndex(int index) => index < BOARD_SIZE && index >= 0;
   
   bool isNeighbor(int indexA, int indexB) {
     final int startX = indexA % BOARD_WIDTH;
@@ -227,11 +193,12 @@ class SuperPop {
     context.clearRect(0, 0, canvas.width, canvas.height);
     
     // Grid
-    for (int i = 0; i < gems.length; i++) {
-      final double x = gems[i].renderX;
-      final double y = gems[i].renderY;
-      final int sx = (gems[i].type % SPRITES_COUNT) * TILE_WIDTH;
-      final int sy = (gems[i].type ~/ SPRITES_COUNT) * TILE_HEIGHT;
+    for (int i = 0; i < BOARD_SIZE; i++) {
+      final Gem gem = board.getGemAt(index : i);
+      final double x = gem.renderPosition.x;
+      final double y = gem.renderPosition.y;
+      final int sx = (gem.type % SPRITES_COUNT) * TILE_WIDTH;
+      final int sy = (gem.type ~/ SPRITES_COUNT) * TILE_HEIGHT;
       final double dx = x * TILE_WIDTH;
       final double dy = y * TILE_WIDTH;
       context.drawImageScaledFromSource(spriteSheet, 
@@ -278,7 +245,8 @@ class SuperPop {
       downIndex = -1;
     } else {
       // Save index, on release see if release index is neighbor
-      downIndex = index;      
+      downIndex = index;
+      print('set downIndex to $index');
     }
   }
   
@@ -296,12 +264,14 @@ class SuperPop {
     downIndex = -1;
   }
   
-  void trySwap(int indexA, int indexB) {
+  void trySwap(int indexFrom, int indexTo) {
     // TODO: Check if swap is valid (i.e. will result in a drop).
     // If valid, use moveTo.
     // If not, use moveToAndBack
-    gems[indexA].moveToIndex(indexB, swapDone);
-    gems[indexB].moveToIndex(indexA, swapDone);
+    //gems[indexA].moveToIndex(indexB, swapDone);
+    //gems[indexB].moveToIndex(indexA, swapDone);
+    if (board.trySwap(indexFrom, indexTo)) print('match');
+    else print('no match');
     swapping = true;
   }
   
