@@ -38,17 +38,17 @@ class Board {
     temp = gems[indexTo];
     gems[indexTo] = gems[indexFrom];
     gems[indexFrom] = temp;
-    
+
     // If a swap will cause a match
     if (match) {
       // Start anim and when anim is done, swap positions for realsies
-      gems[indexTo].moveTo(swapDoneCallback, index : indexFrom);
-      gems[indexFrom].moveTo(swapDoneCallback, index : indexTo);
+      gems[indexTo].moveTo(index : indexFrom, callback : swapDoneCallback);
+      gems[indexFrom].moveTo(index : indexTo, callback : swapDoneCallback);
     } else {
       // If not
       // Stat bounce anim
-      gems[indexTo].moveTo(swapDoneCallback, index: indexFrom, returnOnSwap : true);
-      gems[indexFrom].moveTo(swapDoneCallback, index: indexTo, returnOnSwap : true);
+      gems[indexTo].moveTo(index: indexFrom, returnOnSwap : true);
+      gems[indexFrom].moveTo(index: indexTo, returnOnSwap : true);
     }
     
     return match;    
@@ -68,6 +68,7 @@ class Board {
   }
 
   bool checkForMatch(int index) {
+    // TODO: Debug and fix
     // Check two steps up, down, left, right from this index.
     // If type of checked pieces if not same as that of index, abort.
     // If position is invalid, abort.
@@ -132,14 +133,14 @@ class Board {
         if (gem.moveTimer <= 0.0) {
           if (gem.returnOnSwap) {
             gem.position = gem.targetPosition;
-            gem.moveTo(swapDoneCallback, position : gem.fromPosition);
+            gem.moveTo(position : gem.fromPosition);
           } else {
             // This is either second since return from swap, or first from regular.
             gem.moveTimer = 0.0;
             gem.position = gem.targetPosition;
             gem.targetPosition = INVALID_POSITION;
             gem.fromPosition = INVALID_POSITION;
-            gem.swapDoneCallback(gem);
+            if (gem.swapDoneCallback != null) gem.swapDoneCallback(gem);
           }
         }
       }
@@ -156,7 +157,7 @@ class Board {
       Gem g0 = gems[i0];
       gems[i0] = gems[i1];
       gems[i1] = g0;
-      swappedGems.clear(); 
+      swappedGems.clear();
     }
   }
 }
