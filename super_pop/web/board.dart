@@ -35,6 +35,85 @@ class Board {
     bouncedGemCount++;
   }
   
+  void drop(double dt) {
+    // Go through entire board
+    // For each that is invalid, do this:
+    //  Swap with the one above you until you are at the top, or
+    //  The one above you is invalid as well
+    for (int index = 0; index < size; index++) {
+      int x = index % width;
+      int y = index ~/ height;
+      
+      if (isValid(x : x, y : y) && getGemAt(x : x, y : y).type == -1) {
+        int nX = x;
+        int nY = y - 1;
+        while (isValid(x : nX, y : nY) && getGemAt(x : nX, y : nY).type != -1) {
+          int nIndex = nY * width + nX;
+          gems[index].type = getGemAt(x : nX, y : nY).type;
+          gems[nIndex].type = -1;
+          // TODO: Instead of flipping, tell all above not -1 to move down.
+          // TODO: TargetType as well, set when animation is done?
+          //gems[index].moveTo(nX, nY);
+          //gems[nIndex].moveTo(x, y);
+          nY--;
+          index -= width;
+          break;
+        }
+      }
+    }
+    
+    for (int index = 0; index < size; index++) {
+      final int x = index % width;
+      final int y = index ~/ height;
+      if (isValid(x : x, y : y) && getGemAt(x : x, y : y).type == -1) {
+        gems[index] = new Gem(new Vector2(x.toDouble(), y.toDouble()), rand.nextInt(7));
+      }
+    }
+  }
+  
+  void removeRows(double dt) {
+    List<int> toRemove = new List<int>();
+    for (int index = 0; index < size; index++) {
+      final int x = index % width;
+      final int y = index ~/ height;
+      Gem currentGem = gems[index];
+      // Check right and down. Okay since we start at top left.
+      // Right
+      int offset = 1;
+      int nX = x + offset;
+      int nY = y;
+      List<int> matches = new List<int>();
+      matches.add(index);
+      while(isValid(x : nX, y : nY) && getGemAt(x : nX, y : nY).type == currentGem.type) {
+        matches.add(nY * width + nX);
+        nX++;
+      }
+      if (matches.length > 2) {
+        toRemove.addAll(matches);
+      }
+      matches.clear();
+      
+      // Down
+      offset = 1;
+      nX = x;
+      nY = y + offset;
+      matches.add(index);
+      while(isValid(x : nX, y : nY) && getGemAt(x : nX, y : nY).type == currentGem.type) {
+        matches.add(nY * width + nX);
+        nY++;
+      }
+      if (matches.length > 2) {
+        toRemove.addAll(matches);
+      }
+      matches.clear();
+    }
+    
+    for (int i = 0; i < toRemove.length; i++) {
+      // TODO: -1 renders to 3, make Gem.type class w/ relevant info (or just add to gem)?
+      gems[toRemove[i]] = new Gem(new Vector2((toRemove[i] % width).toDouble(), (toRemove[i] ~/ height).toDouble()), -1);
+    }
+  }
+  
   bool trySwap(int indexFrom, int indexTo) {
     Gem temp = gems[indexTo];
     gems[indexTo] = gems[indexFrom];
@@ -143,6 +222,8 @@ class Board {
   }
   
   void update(double dt) {
+    removeRows(dt);
+    drop(dt);
     for (int i = 0; i < gems.length; i++) {
       if (gems[i] == null) continue;
       Gem gem = gems[i];

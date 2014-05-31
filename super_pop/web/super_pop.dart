@@ -48,35 +48,6 @@ class SuperPop {
     draw(dt);
   }
   
-  void updateGems(double dt) {
-//    for (int i = 0; i < gems.length; i++) {
-//      if (gems[i] == null) continue;
-//      Gem gem = gems[i];
-//      
-//      if (gem.moveTimer > 0.0) {
-//        gem.moveTimer -= dt;
-//        
-//        // TODO: Interpolate, linear looks boring
-//        // 1 -> 0
-//        double moveFraction = gem.moveTimer / gem.moveTime;
-//        moveFraction *= moveFraction;
-//        gem.renderX = moveFraction * gem.x + (1 - moveFraction) * gem.tX;
-//        gem.renderY = moveFraction * gem.y + (1 - moveFraction) * gem.tY;
-//        
-//        if (gem.moveTimer <= 0.0) {
-//          gem.moveTimer = 0.0;
-//          gem.x = gem.tX;
-//          gem.y = gem.tY;
-//          gem.tX = -1;
-//          gem.tY = -1;
-//          gem.swapDoneCallback(gem);
-//          // TODO: Done moving, callback to SuperPop to swap for real in gems list
-//          // And clear, or move back, etc.
-//        }
-//      }
-//    }
-  }
-  
 //  void drop(double dt) {
 //    // Go through entire board
 //    // For each that is invalid, do this:
@@ -112,50 +83,6 @@ class SuperPop {
 //      }
 //    }
 //  }
-//  
-//  void removeRows(double dt) {
-//    List<int> toRemove = new List<int>();
-//    for (int index = 0; index < BOARD_SIZE; index++) {
-//      final int x = index % BOARD_WIDTH;
-//      final int y = index ~/ BOARD_HEIGHT;
-//      Gem currentGem = gems[index];
-//      // Check right and down. Okay since we start at top left.
-//      // Right
-//      int offset = 1;
-//      int nX = x + offset;
-//      int nY = y;
-//      List<int> matches = new List<int>();
-//      matches.add(index);
-//      while(isValid(nX, nY) && getGemAt(nX, nY).type == currentGem.type) {
-//        matches.add(nY * BOARD_WIDTH + nX);
-//        nX++;
-//      }
-//      if (matches.length > 2) {
-//        toRemove.addAll(matches);
-//      }
-//      matches.clear();
-//      
-//      // Down
-//      offset = 1;
-//      nX = x;
-//      nY = y + offset;
-//      matches.add(index);
-//      while (isValid(nX, nY) && getGemAt(nX, nY).type == currentGem.type) {
-//        matches.add(nY * BOARD_WIDTH + nX);
-//        nY++;
-//      }
-//      if (matches.length > 2) {
-//        toRemove.addAll(matches);
-//      }
-//      matches.clear();
-//    }
-//    
-//    for (int i = 0; i < toRemove.length; i++) {
-//      // TODO: -1 renders to 3, make Gem.type class w/ relevant info (or just add to gem)?
-//      gems[toRemove[i]] = new Gem(toRemove[i] % BOARD_WIDTH, toRemove[i] ~/ BOARD_HEIGHT, -1);
-//    }
-//  }
-  
 //  Gem getGemAt(int x, int y) {
 //    final int index = y * BOARD_WIDTH + x;
 //    if (isValidIndex(index)) {
@@ -252,7 +179,6 @@ class SuperPop {
     } else {
       // Save index, on release see if release index is neighbor
       downIndex = index;
-      print('set downIndex to $index');
     }
   }
   
@@ -271,13 +197,7 @@ class SuperPop {
   }
   
   void trySwap(int indexFrom, int indexTo) {
-    // TODO: Check if swap is valid (i.e. will result in a drop).
-    // If valid, use moveTo.
-    // If not, use moveToAndBack
-    //gems[indexA].moveToIndex(indexB, swapDone);
-    //gems[indexB].moveToIndex(indexA, swapDone);
-    if (board.trySwap(indexFrom, indexTo)) print('match');
-    else print('no match');
+    board.trySwap(indexFrom, indexTo);
     swapping = true;
   }
   
