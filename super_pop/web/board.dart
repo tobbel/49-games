@@ -4,6 +4,7 @@ class Board {
   static final Vector2 INVALID_POSITION = new Vector2(-1.0, -1.0);
   List<Gem> gems = new List<Gem>();
   List<Gem> swappedGems = new List<Gem>();
+  int bouncedGemCount = 0;
   
   final int width;
   final int height;
@@ -11,10 +12,13 @@ class Board {
   
   var rand = new Random();
   
-  Board(int in_width, int in_height)
+  var swapDoneGameCallback;
+  
+  Board(int in_width, int in_height, var swapDone)
       : width = in_width
       , height = in_height
-      , size = in_width * in_height {
+      , size = in_width * in_height
+      , swapDoneGameCallback = swapDone {
     for (int index = 0; index < size; index++) {
       final int x = index % width;
       final int y = index ~/ height;
@@ -22,8 +26,13 @@ class Board {
     }
   }
   
+  // TODO: Solve this with one callback method, argument(s)?
   void swapDoneCallback(Gem gem) {
     swappedGems.add(gem);
+  }
+  
+  void bounceDoneCallback(Gem gem) {
+    bouncedGemCount++;
   }
   
   bool trySwap(int indexFrom, int indexTo) {
@@ -47,8 +56,8 @@ class Board {
     } else {
       // If not
       // Stat bounce anim
-      gems[indexTo].moveTo(index: indexFrom, returnOnSwap : true);
-      gems[indexFrom].moveTo(index: indexTo, returnOnSwap : true);
+      gems[indexTo].moveTo(index: indexFrom, returnOnSwap : true, callback : bounceDoneCallback);
+      gems[indexFrom].moveTo(index: indexTo, returnOnSwap : true, callback : bounceDoneCallback);
     }
     
     return match;    
@@ -79,30 +88,32 @@ class Board {
     // Up
     for (int up = 1; up < 3; up++) {
       final int upIndex = index - (up * width);
-      if (!isValid(index : upIndex) || gems[upIndex] != startType) break;
+      if (!isValid(index : upIndex) || gems[upIndex].type != startType) break;
       if (up == 2) return true;
     }
     
     // Right
     for (int right = 1; right < 3; right++) {
       final int rightIndex = index + right;
-      if (!isValid(index : rightIndex) || gems[rightIndex] != startType) break;
+      if (!isValid(index : rightIndex) || gems[rightIndex].type != startType) break;
       if (right == 2) return true;
     }
     
     // Down
     for (int down = 1; down < 3; down++) {
       final int downIndex = index + (down * width);
-      if (!isValid(index : downIndex) || gems[downIndex] != startType) break;
+      if (!isValid(index : downIndex) || gems[downIndex].type != startType) break;
       if (down == 2) return true;
     }
     
     // Left
     for (int left = 1; left < 3; left++) {
       final int leftIndex = index - left;
-      if (!isValid(index : leftIndex) || gems[leftIndex] != startType) break;
+      if (!isValid(index : leftIndex) || gems[leftIndex].type != startType) break;
       if (left == 2) return true;
     }
+    
+    // TODO: Check if index is in middle of match
     
     return false;
   }
@@ -158,6 +169,11 @@ class Board {
       gems[i0] = gems[i1];
       gems[i1] = g0;
       swappedGems.clear();
+      swapDoneGameCallback();
+    }
+    if (bouncedGemCount == 2) {
+      bouncedGemCount = 0;
+      swapDoneGameCallback();
     }
   }
 }

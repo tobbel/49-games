@@ -30,7 +30,11 @@ class SuperPop {
   
   void start() {
     context = canvas.context2D;
-    board = new Board(BOARD_WIDTH, BOARD_HEIGHT);
+    board = new Board(BOARD_WIDTH, BOARD_HEIGHT, swapDone);
+  }
+  
+  void swapDone() {
+    swapping = false;
   }
   
   void update(double dt) {
@@ -233,6 +237,8 @@ class SuperPop {
   }
   
   void mouseDown(Vector2 position) {
+    if (swapping) return;
+    
     position = canvasToGridPosition(position);
     setMousePosition(position);
     final int index = mouseY * BOARD_WIDTH + mouseX;
