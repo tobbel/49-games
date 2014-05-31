@@ -8,6 +8,7 @@ import 'package:vector_math/vector_math.dart';
 
 part 'super_pop.dart';
 part 'gem.dart';
+part 'board.dart';
 
 SuperPop game;
 CanvasElement canvas;
