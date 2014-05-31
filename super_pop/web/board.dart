@@ -77,7 +77,6 @@ class Board {
   }
 
   bool checkForMatch(int index) {
-    // TODO: Debug and fix
     // Check two steps up, down, left, right from this index.
     // If type of checked pieces if not same as that of index, abort.
     // If position is invalid, abort.
@@ -113,7 +112,21 @@ class Board {
       if (left == 2) return true;
     }
     
-    // TODO: Check if index is in middle of match
+    // Middle row
+    for (int mid = -1; mid < 2; mid++) {
+      if (mid == 0) continue;
+      final int row = index + mid;
+      if (!isValid(index : row) || gems[row].type != startType) break;
+      if (mid == 1) return true;
+    }
+    
+    // Middle col
+    for (int mid = -1; mid < 2; mid++) {
+      if (mid == 0) continue;
+      final int col = index + (mid * width);
+      if (!isValid(index : col) || gems[col].type != startType) break;
+      if (mid == 1) return true;
+    }
     
     return false;
   }
