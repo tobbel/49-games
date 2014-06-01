@@ -6,8 +6,9 @@ class Gem {
   Vector2 targetPosition = Board.INVALID_POSITION;
   Vector2 renderPosition = Board.INVALID_POSITION;
   double moveTimer = 0.0;
-  double moveTime = 0.15;
+  double moveTime = 0.5;
   int type = -1;
+  double scale = 1.0;
   bool returnOnSwap = false;
   var swapDoneCallback;
   Gem(this.position, this.type) {
