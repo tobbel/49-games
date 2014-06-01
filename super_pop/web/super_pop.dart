@@ -41,58 +41,9 @@ class SuperPop {
     // TODO: Accumulate.
     // TODO: Animate.
     // TODO: Fill cleared from above
-    //removeRows(dt);
-    //drop(dt);
     board.update(dt);
-    //updateSwap(dt);
     draw(dt);
   }
-  
-//  void drop(double dt) {
-//    // Go through entire board
-//    // For each that is invalid, do this:
-//    //  Swap with the one above you until you are at the top, or
-//    //  The one above you is invalid as well
-//    for (int index = 0; index < BOARD_SIZE; index++) {
-//      int x = index % BOARD_WIDTH;
-//      int y = index ~/ BOARD_HEIGHT;
-//      
-//      if (isValid(x, y) && getGemAt(x, y).type == -1) {
-//        int nX = x;
-//        int nY = y - 1;
-//        while (isValid(nX, nY) && getGemAt(nX, nY).type != -1) {
-//          int nIndex = nY * BOARD_WIDTH + nX;
-//          gems[index].type = getGemAt(nX, nY).type;
-//          gems[nIndex].type = -1;
-//          // TODO: Instead of flipping, tell all above not -1 to move down.
-//          // TODO: TargetType as well, set when animation is done?
-//          //gems[index].moveTo(nX, nY);
-//          //gems[nIndex].moveTo(x, y);
-//          nY--;
-//          index -= BOARD_WIDTH;
-//          break;
-//        }
-//      }
-//    }
-//    
-//    for (int index = 0; index < BOARD_SIZE; index++) {
-//      final int x = index % BOARD_WIDTH;
-//      final int y = index ~/ BOARD_HEIGHT;
-//      if (isValid(x, y) && getGemAt(x, y).type == -1) {
-//        gems[index] = new Gem(x, y, rand.nextInt(7));
-//      }
-//    }
-//  }
-//  Gem getGemAt(int x, int y) {
-//    final int index = y * BOARD_WIDTH + x;
-//    if (isValidIndex(index)) {
-//      return gems[index];
-//    }
-//    return null;
-//  }
-  
-//  bool isValid(int x, int y) => x < BOARD_WIDTH && y < BOARD_WIDTH && x >= 0 && y >= 0;
-//  bool isValidIndex(int index) => index < BOARD_SIZE && index >= 0;
   
   bool isNeighbor(int indexA, int indexB) {
     // TODO: Abs function
@@ -119,8 +70,13 @@ class SuperPop {
       final double dx = x * TILE_WIDTH;
       final double dy = y * TILE_WIDTH;
       final double scalePositionOffset = (gem.scale - 1.0) / 2.0;
+      // TODO: Check style guide
       context.drawImageScaledFromSource(spriteSheet, 
-          sx, sy, TILE_WIDTH, TILE_HEIGHT, dx - TILE_WIDTH * scalePositionOffset, dy - TILE_HEIGHT * scalePositionOffset, TILE_WIDTH * gem.scale, TILE_HEIGHT * gem.scale);
+          sx, sy, TILE_WIDTH, TILE_HEIGHT, 
+          dx - TILE_WIDTH * scalePositionOffset, 
+          dy - TILE_HEIGHT * scalePositionOffset, 
+          TILE_WIDTH * gem.scale, 
+          TILE_HEIGHT * gem.scale);
     }
     
     // Marker
