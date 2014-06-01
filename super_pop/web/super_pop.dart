@@ -95,27 +95,13 @@ class SuperPop {
 //  bool isValidIndex(int index) => index < BOARD_SIZE && index >= 0;
   
   bool isNeighbor(int indexA, int indexB) {
-    final int startX = indexA % BOARD_WIDTH;
-    final int startY = indexA ~/ BOARD_HEIGHT;
-    final int endX = indexB % BOARD_WIDTH;
-    final int endY = indexB ~/ BOARD_HEIGHT; 
+    // TODO: Abs function
+    int diff = indexA - indexB;
+    if (diff < 0) diff *= -1;
     
-    // TODO: Better way of doing this by comparing indices 
-    //       and not hacky
-    for (int row = -1; row < 2; row++) {
-      for (int col = -1; col < 2; col++) {
-        if (row == 0 && col == 0) continue;
-        if (row == -1 && col == -1) continue;
-        if (row == -1 && col == 1) continue;
-        if (row == 1 && col == -1) continue;
-        if (row == 1 && col == 1) continue;
-        
-        final int nextX = endX + col;
-        final int nextY = endY + row;
-        
-        if (nextX == startX && nextY == startY) return true;
-      }
-    }
+    if (diff == 1 || diff == 8)
+      return true;
+    
     return false;
   }
   
@@ -132,8 +118,9 @@ class SuperPop {
       final int sy = (gem.type ~/ SPRITES_COUNT) * TILE_HEIGHT;
       final double dx = x * TILE_WIDTH;
       final double dy = y * TILE_WIDTH;
+      final double scalePositionOffset = (gem.scale - 1.0) / 2.0;
       context.drawImageScaledFromSource(spriteSheet, 
-          sx, sy, TILE_WIDTH, TILE_HEIGHT, dx, dy, TILE_WIDTH, TILE_HEIGHT);
+          sx, sy, TILE_WIDTH, TILE_HEIGHT, dx - TILE_WIDTH * scalePositionOffset, dy - TILE_HEIGHT * scalePositionOffset, TILE_WIDTH * gem.scale, TILE_HEIGHT * gem.scale);
     }
     
     // Marker
