@@ -15,6 +15,7 @@ class SuperPop {
   static const int SPRITESHEET_WIDTH = 256;
   static const int SPRITESHEET_HEIGHT = 256;
   static const int SPRITES_COUNT = SPRITESHEET_WIDTH ~/ TILE_WIDTH;
+  static const int INVALID_TILE = 9;
   
   int mouseX = 0;
   int mouseY = 0;

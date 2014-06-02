@@ -36,6 +36,7 @@ class Board {
   }
   
   void drop(double dt) {
+    // TODO: Refactor
     // Go through entire board
     // For each that is invalid, do this:
     //  Swap with the one above you until you are at the top, or
@@ -109,8 +110,7 @@ class Board {
     }
     
     for (int i = 0; i < toRemove.length; i++) {
-      // TODO: -1 renders to 3, make Gem.type class w/ relevant info (or just add to gem)?
-      gems[toRemove[i]] = new Gem(new Vector2((toRemove[i] % width).toDouble(), (toRemove[i] ~/ height).toDouble()), -1);
+      gems[toRemove[i]] = new Gem(new Vector2((toRemove[i] % width).toDouble(), (toRemove[i] ~/ height).toDouble()), SuperPop.INVALID_TILE);
     }
   }
   
@@ -223,7 +223,7 @@ class Board {
   
   void update(double dt) {
     removeRows(dt);
-    drop(dt);
+    //drop(dt);
 
     for (int i = 0; i < gems.length; i++) {
       if (gems[i] == null) continue;
