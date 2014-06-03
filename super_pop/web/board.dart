@@ -37,6 +37,18 @@ class Board {
   
   void drop(double dt) {
     // TODO: Refactor
+    // New
+    // Desired effect:
+    // i)   All invalid tiles pop, leaving a blank space.
+    // ii)  When blank anim is done, all tiles above blank space move down at once.
+    // iii) At the top of each dropped row, new tiles fall in above the others.
+    // Two alternatives:
+    // i)  Pre-calculate everything, fill board and just animate.
+    // ii) Calculate one step at a time, fill board as things go.
+    // i) Is probably best here, but we'll need to change animation a bit and
+    // Ignore everything else while these animations go.
+    
+    // Old
     // Go through entire board
     // For each that is invalid, do this:
     //  Swap with the one above you until you are at the top, or

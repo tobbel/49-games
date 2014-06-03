@@ -21,7 +21,6 @@ class SuperPop {
   int mouseY = 0;
   int downIndex = -1;
   bool swapping = false;
-  // TODO: Invalid gem type
   
   var rand = new Random();
   Board board;
@@ -39,8 +38,6 @@ class SuperPop {
   }
   
   void update(double dt) {
-    // TODO: Accumulate.
-    // TODO: Animate.
     // TODO: Fill cleared from above
     board.update(dt);
     draw(dt);
