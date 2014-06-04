@@ -34,7 +34,7 @@ class Board {
   void bounceDoneCallback(Gem gem) {
     bouncedGemCount++;
   }
-  
+  bool printed = false;
   void drop(double dt) {
     // TODO: Refactor
     // New
@@ -45,43 +45,66 @@ class Board {
     // Two alternatives:
     // i)  Pre-calculate everything, fill board and just animate.
     // ii) Calculate one step at a time, fill board as things go.
-    // i) Is probably best here, but we'll need to change animation a bit and
+    // Alt. i) Is probably best here, but we'll need to change animation a bit and
     // Ignore everything else while these animations go.
+    // TODO: bool ignoreStuff = true;
+    Map<int, List<int>> invalidPerCol = new Map<int, List<int>>();
+    for (int index = size; index >= 0; index--) {
+      int x = index % width;
+      int y = index ~/ height;
+      // For the first index of each column, initialize list for that column.
+      if (y == (height - 1)) {
+        invalidPerCol[x] = new List<int>();
+      }
+      
+      if (isValid(x : x, y : y) && getGemAt(x : x, y : y).type == SuperPop.INVALID_TILE) {
+        invalidPerCol[x].add(y);
+        // Count invalid indices per row, and starting (bottom).
+        // Move all above down n steps.
+      }
+    }
+    if (!printed) {
+      printed = true;
+      invalidPerCol.forEach((k, v) {
+        print('Row $k');
+        print(v);
+      });
+    }
     
     // Old
     // Go through entire board
     // For each that is invalid, do this:
     //  Swap with the one above you until you are at the top, or
     //  The one above you is invalid as well
-    for (int index = 0; index < size; index++) {
-      int x = index % width;
-      int y = index ~/ height;
-      
-      if (isValid(x : x, y : y) && getGemAt(x : x, y : y).type == -1) {
-        int nX = x;
-        int nY = y - 1;
-        while (isValid(x : nX, y : nY) && getGemAt(x : nX, y : nY).type != -1) {
-          int nIndex = nY * width + nX;
-          gems[index].type = getGemAt(x : nX, y : nY).type;
-          gems[nIndex].type = -1;
-          // TODO: Instead of flipping, tell all above not -1 to move down.
-          // TODO: TargetType as well, set when animation is done?
-          //gems[index].moveTo(nX, nY);
-          //gems[nIndex].moveTo(x, y);
-          nY--;
-          index -= width;
-          break;
-        }
-      }
-    }
-    
-    for (int index = 0; index < size; index++) {
-      final int x = index % width;
-      final int y = index ~/ height;
-      if (isValid(x : x, y : y) && getGemAt(x : x, y : y).type == -1) {
-        gems[index] = new Gem(new Vector2(x.toDouble(), y.toDouble()), rand.nextInt(7));
-      }
-    }
+//    for (int index = 0; index < size; index++) {
+//      int x = index % width;
+//      int y = index ~/ height;
+//      
+//      if (isValid(x : x, y : y) && getGemAt(x : x, y : y).type == -1) {
+//        int nX = x;
+//        int nY = y - 1;
+//        while (isValid(x : nX, y : nY) && getGemAt(x : nX, y : nY).type != -1) {
+//          int nIndex = nY * width + nX;
+//          gems[index].type = getGemAt(x : nX, y : nY).type;
+//          gems[nIndex].type = -1;
+//          // TODO: Instead of flipping, tell all above not -1 to move down.
+//          // TODO: TargetType as well, set when animation is done?
+//          //gems[index].moveTo(nX, nY);
+//          //gems[nIndex].moveTo(x, y);
+//          nY--;
+//          index -= width;
+//          break;
+//        }
+//      }
+//    }
+//    
+//    for (int index = 0; index < size; index++) {
+//      final int x = index % width;
+//      final int y = index ~/ height;
+//      if (isValid(x : x, y : y) && getGemAt(x : x, y : y).type == -1) {
+//        gems[index] = new Gem(new Vector2(x.toDouble(), y.toDouble()), rand.nextInt(7));
+//      }
+//    }
   }
   
   void removeRows(double dt) {
@@ -235,7 +258,7 @@ class Board {
   
   void update(double dt) {
     removeRows(dt);
-    //drop(dt);
+    drop(dt);
 
     for (int i = 0; i < gems.length; i++) {
       if (gems[i] == null) continue;
