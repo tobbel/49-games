@@ -57,12 +57,13 @@ class Board {
         invalidPerCol[x] = new List<int>();
       }
       
+      // Count invalid indices per row, and starting (bottom).
       if (isValid(x : x, y : y) && getGemAt(x : x, y : y).type == SuperPop.INVALID_TILE) {
         invalidPerCol[x].add(y);
-        // Count invalid indices per row, and starting (bottom).
-        // Move all above down n steps.
       }
     }
+    
+    // TODO: Look at k and v.length, move all above down n steps.
     if (!printed) {
       printed = true;
       invalidPerCol.forEach((k, v) {
