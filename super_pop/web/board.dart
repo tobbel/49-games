@@ -73,8 +73,16 @@ class Board {
         if (v.length != 0) {
           final int top = v[v.length - 1];
           if (top > 0) {
+            final int steps = v.length;
             // Move all above top item v.length down
-            
+            for (int i = top; i >= 0; i--) {
+              final int oldIndex = i * width + k;
+              final int newIndex = (i + steps) * width + k;
+              // Just swap for now
+              Gem temp = gems[newIndex];
+              gems[newIndex] = gems[oldIndex];
+              gems[oldIndex] = temp;
+            }
             
           } else {
             // Just generate as many as we need and put in v slots
