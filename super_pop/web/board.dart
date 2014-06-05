@@ -69,6 +69,17 @@ class Board {
       invalidPerCol.forEach((k, v) {
         print('Row $k');
         print(v);
+        // Top item is last in list
+        if (v.length != 0) {
+          final int top = v[v.length - 1];
+          if (top > 0) {
+            // Move all above top item v.length down
+            
+            
+          } else {
+            // Just generate as many as we need and put in v slots
+          }
+        }
       });
     }
     
