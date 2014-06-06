@@ -79,9 +79,9 @@ class Board {
               final int oldIndex = i * width + k;
               final int newIndex = (i + steps) * width + k;
               // Just swap for now
-              Gem temp = gems[newIndex];
-              gems[newIndex] = gems[oldIndex];
-              gems[oldIndex] = temp;
+              //Gem temp = gems[newIndex];
+              //gems[newIndex] = gems[oldIndex];
+              //gems[oldIndex] = temp;
             }
             
           } else {
