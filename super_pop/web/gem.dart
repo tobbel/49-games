@@ -19,7 +19,7 @@ class Gem {
     if (callback != null) swapDoneCallback = callback;
     fromPosition = this.position;
     if (position != null) {
-      targetPosition = position;      
+      targetPosition = position;
     } else if (index != -1) {
       // TODO: Check style guide
       targetPosition = new Vector2(

@@ -65,23 +65,27 @@ class Board {
     
     // TODO: Look at k and v.length, move all above down n steps.
     if (!printed) {
-      printed = true;
+      //printed = true;
       invalidPerCol.forEach((k, v) {
-        print('Row $k');
-        print(v);
+        //print('Row $k');
+        //print(v);
         // Top item is last in list
         if (v.length != 0) {
           final int top = v[v.length - 1];
           if (top > 0) {
             final int steps = v.length;
             // Move all above top item v.length down
-            for (int i = top; i >= 0; i--) {
+            for (int i = (top - 1); i >= 0; i--) {
               final int oldIndex = i * width + k;
               final int newIndex = (i + steps) * width + k;
+              print('swapping old:$oldIndex with new:$newIndex');
               // Just swap for now
-              //Gem temp = gems[newIndex];
-              //gems[newIndex] = gems[oldIndex];
-              //gems[oldIndex] = temp;
+              Gem temp = gems[newIndex];
+              gems[newIndex] = gems[oldIndex];
+              gems[oldIndex] = temp;
+              // TODO: Super temp
+              gems[newIndex].position = new Vector2((oldIndex % width).toDouble(),(oldIndex ~/ height).toDouble());
+              gems[oldIndex].position = new Vector2((newIndex % width).toDouble(),(newIndex ~/ height).toDouble());
             }
             
           } else {
