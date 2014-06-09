@@ -11,8 +11,10 @@ class Gem {
   double scale = 1.0;
   bool returnOnSwap = false;
   var swapDoneCallback;
+  Sprite sprite;
   Gem(this.position, this.type) {
     renderPosition = this.position;
+    sprite = new Sprite(SuperPop.spriteSheet, 64, 64);
   }
   
   void moveTo({ Vector2 position : null, int x : -1, int y : -1, int index : -1, bool returnOnSwap : false, var callback : null}) {

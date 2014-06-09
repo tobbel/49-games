@@ -24,13 +24,14 @@ class SuperPop {
   
   var rand = new Random();
   Board board;
-  ImageElement spriteSheet = new ImageElement(src: 'img/spritesheet.png', 
+  static ImageElement spriteSheet = new ImageElement(src: 'img/spritesheet.png', 
                                               width: SPRITESHEET_WIDTH, 
                                               height: SPRITESHEET_HEIGHT);
   
   void start() {
     context = canvas.context2D;
     board = new Board(BOARD_WIDTH, BOARD_HEIGHT, swapDone);
+    Sprite.context = context;
   }
   
   void swapDone() {
@@ -63,18 +64,19 @@ class SuperPop {
       final Gem gem = board.getGemAt(index : i);
       final double x = gem.renderPosition.x;
       final double y = gem.renderPosition.y;
+      gem.sprite.draw(new Vector2(x * TILE_WIDTH, y * TILE_HEIGHT), index: gem.type);
       final int sx = (gem.type % SPRITES_COUNT) * TILE_WIDTH;
       final int sy = (gem.type ~/ SPRITES_COUNT) * TILE_HEIGHT;
       final double dx = x * TILE_WIDTH;
       final double dy = y * TILE_WIDTH;
       final double scalePositionOffset = (gem.scale - 1.0) / 2.0;
       // TODO: Check style guide
-      context.drawImageScaledFromSource(spriteSheet, 
-          sx, sy, TILE_WIDTH, TILE_HEIGHT, 
-          dx - TILE_WIDTH * scalePositionOffset, 
-          dy - TILE_HEIGHT * scalePositionOffset, 
-          TILE_WIDTH * gem.scale, 
-          TILE_HEIGHT * gem.scale);
+      //context.drawImageScaledFromSource(spriteSheet, 
+      //    sx, sy, TILE_WIDTH, TILE_HEIGHT, 
+      //    dx - TILE_WIDTH * scalePositionOffset, 
+      //    dy - TILE_HEIGHT * scalePositionOffset, 
+      //    TILE_WIDTH * gem.scale, 
+      //    TILE_HEIGHT * gem.scale);
     }
     
     // Marker
