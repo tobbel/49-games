@@ -56,7 +56,6 @@ class SuperPop {
       animationTimer -= dt;
     }
     
-    // TODO: Mirror this in render
     switch (currentState) {
       case GameState.IDLE: 
         break;    
@@ -64,18 +63,28 @@ class SuperPop {
         // Swap is done
         if (animationTimer <= 0) {
           currentState = GameState.CLEAR;
+          // Actually swap gems
+          // Reset anim timer
         }
         break;
       case GameState.CLEAR:
         // Fade out of swapped gems is done
         if (animationTimer <= 0) {
           currentState = GameState.FALL;
+          // Delete all matched squares (list filled from (temp, after moved) board when trying to swap)
+          // Calculate who should fall how
+          // Apply fall
+          // Mark top spaces as empty
+          // Reset anim timer
         }
         break;
       case GameState.FALL:
-        // Fall animation is done, go back to idle 
+        // Fall animation is done 
         if (animationTimer <= 0) {
+          // Check board if any new matches have been made
+          // If so, switch to CLEAR
           currentState = GameState.IDLE;
+          
         break;
       }
     }
@@ -101,6 +110,7 @@ class SuperPop {
     
     // Grid
     for (int i = 0; i < BOARD_SIZE; i++) {
+      // Check if this gem is swapping, render offset if it is
       final Gem gem = board.getGemAt(index : i);
       final double x = gem.renderPosition.x;
       final double y = gem.renderPosition.y;
