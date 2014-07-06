@@ -1,9 +1,21 @@
 part of super_pop;
 
+class GameState {
+  final _value;
+  const GameState._internal(this._value);
+  toString() => 'Enum.$_value';
+
+  static const IDLE = const GameState._internal('IDLE');
+  static const SWAP = const GameState._internal('SWAP');
+  static const CLEAR = const GameState._internal('CLEAR');
+  static const FALL = const GameState._internal('FALL');
+}
+
 class SuperPop {
   CanvasElement canvas;
   CanvasRenderingContext2D context;
   SuperPop(this.canvas);
+  GameState currentState = GameState.IDLE;
   
   static const int BOARD_WIDTH = 8;
   static const int BOARD_HEIGHT = 8;
@@ -21,6 +33,7 @@ class SuperPop {
   int mouseY = 0;
   int downIndex = -1;
   bool swapping = false;
+  double animationTimer = 0.0;
   
   var rand = new Random();
   Board board;
@@ -39,7 +52,38 @@ class SuperPop {
   }
   
   void update(double dt) {
-    // TODO: Fill cleared from above
+    if (animationTimer > 0.0) {
+      animationTimer -= dt;
+    }
+    
+    // TODO: Mirror this in render
+    switch (currentState) {
+      case GameState.IDLE: {
+        break;
+      }
+      case GameState.SWAP: {
+        // Swap is done
+        if (animationTimer <= 0) {
+          currentState = GameState.CLEAR;
+        }
+        break;
+      }
+      case GameState.CLEAR: {
+        // Fade out of swapped gems is done
+        if (animationTimer <= 0) {
+          currentState = GameState.FALL;
+        }
+        break;
+      }
+      case GameState.FALL: {
+        // Fall animation is done, go back to idle 
+        if (animationTimer <= 0) {
+          currentState = GameState.IDLE;
+        }
+        break;
+      }
+    }
+    
     board.update(dt);
     draw(dt);
   }

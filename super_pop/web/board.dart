@@ -8,17 +8,14 @@ class Board {
   
   final int width;
   final int height;
-  final int size;
+  int size;
   
   var rand = new Random();
   
   var swapDoneGameCallback;
   
-  Board(int in_width, int in_height, var swapDone)
-      : width = in_width
-      , height = in_height
-      , size = in_width * in_height
-      , swapDoneGameCallback = swapDone {
+  Board(this.width, this.height, this.swapDoneGameCallback) {
+    this.size = width * height;
     for (int index = 0; index < size; index++) {
       final int x = index % width;
       final int y = index ~/ height;
