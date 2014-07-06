@@ -58,28 +58,24 @@ class SuperPop {
     
     // TODO: Mirror this in render
     switch (currentState) {
-      case GameState.IDLE: {
-        break;
-      }
-      case GameState.SWAP: {
+      case GameState.IDLE: 
+        break;    
+      case GameState.SWAP:
         // Swap is done
         if (animationTimer <= 0) {
           currentState = GameState.CLEAR;
         }
         break;
-      }
-      case GameState.CLEAR: {
+      case GameState.CLEAR:
         // Fade out of swapped gems is done
         if (animationTimer <= 0) {
           currentState = GameState.FALL;
         }
         break;
-      }
-      case GameState.FALL: {
+      case GameState.FALL:
         // Fall animation is done, go back to idle 
         if (animationTimer <= 0) {
           currentState = GameState.IDLE;
-        }
         break;
       }
     }
