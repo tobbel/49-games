@@ -184,16 +184,16 @@ class Board {
     gems[indexFrom] = temp;
 
     // If a swap will cause a match
-    if (match) {
-      // Start anim and when anim is done, swap positions for realsies
-      gems[indexTo].moveTo(index : indexFrom, callback : swapDoneCallback);
-      gems[indexFrom].moveTo(index : indexTo, callback : swapDoneCallback);
-    } else {
-      // If not
-      // Stat bounce anim
-      gems[indexTo].moveTo(index: indexFrom, returnOnSwap : true, callback : bounceDoneCallback);
-      gems[indexFrom].moveTo(index: indexTo, returnOnSwap : true, callback : bounceDoneCallback);
-    }
+//    if (match) {
+//      // Start anim and when anim is done, swap positions for realsies
+//      gems[indexTo].moveTo(index : indexFrom, callback : swapDoneCallback);
+//      gems[indexFrom].moveTo(index : indexTo, callback : swapDoneCallback);
+//    } else {
+//      // If not
+//      // Stat bounce anim
+//      gems[indexTo].moveTo(index: indexFrom, returnOnSwap : true, callback : bounceDoneCallback);
+//      gems[indexFrom].moveTo(index: indexTo, returnOnSwap : true, callback : bounceDoneCallback);
+//    }
     
     return match;    
   }
@@ -278,49 +278,49 @@ class Board {
   }
   
   void update(double dt) {
-    removeRows(dt);
-    drop(dt);
+    //removeRows(dt);
+    //drop(dt);
 
-    for (int i = 0; i < gems.length; i++) {
-      if (gems[i] == null) continue;
-      Gem gem = gems[i];
-      
-      if (gem.moveTimer > 0.0) {
-        gem.moveTimer -= dt;
-        
-        // TODO: Interpolate, linear looks boring
-        final double moveFraction = gem.moveTimer / gem.moveTime;
-        gem.renderPosition = (gem.position * moveFraction) + (gem.targetPosition * (1 - moveFraction));
-        
-        // MoveFraction goes from 1 to 0
-        // we want scaleFraction to go from 0 to 1 to 0
-        double scaleFraction = 0.0;
-        if (moveFraction > 0.5) {
-          scaleFraction = 1 - ((moveFraction - 0.5) * 2.0);
-        } else {
-          scaleFraction = moveFraction * 2.0;
-        }
-        
-        gem.scale = 1.0 + scaleFraction;
-        
-        if (gem.moveTimer <= 0.0) {
-          if (gem.returnOnSwap) {
-            gem.position = gem.targetPosition;
-            gem.moveTo(position : gem.fromPosition);
-          } else {
-            // This is either second since return from swap, or first from regular.
-            gem.moveTimer = 0.0;
-            gem.position = gem.targetPosition;
-            gem.targetPosition = INVALID_POSITION;
-            gem.fromPosition = INVALID_POSITION;
-            if (gem.swapDoneCallback != null) gem.swapDoneCallback(gem);
-            gem.scale = 1.0;
-          }
-        }
-      }
-    }
+//    for (int i = 0; i < gems.length; i++) {
+//      if (gems[i] == null) continue;
+//      Gem gem = gems[i];
+//      
+//      if (gem.moveTimer > 0.0) {
+//        gem.moveTimer -= dt;
+//        
+//        // TODO: Interpolate, linear looks boring
+//        final double moveFraction = gem.moveTimer / gem.moveTime;
+//        //gem.renderPosition = (gem.position * moveFraction) + (gem.targetPosition * (1 - moveFraction));
+//        
+//        // MoveFraction goes from 1 to 0
+//        // we want scaleFraction to go from 0 to 1 to 0
+//        double scaleFraction = 0.0;
+//        if (moveFraction > 0.5) {
+//          scaleFraction = 1 - ((moveFraction - 0.5) * 2.0);
+//        } else {
+//          scaleFraction = moveFraction * 2.0;
+//        }
+//        
+//        gem.scale = 1.0 + scaleFraction;
+//        
+//        if (gem.moveTimer <= 0.0) {
+//          if (gem.returnOnSwap) {
+//            gem.position = gem.targetPosition;
+//            gem.moveTo(position : gem.fromPosition);
+//          } else {
+//            // This is either second since return from swap, or first from regular.
+//            gem.moveTimer = 0.0;
+//            gem.position = gem.targetPosition;
+//            gem.targetPosition = INVALID_POSITION;
+//            gem.fromPosition = INVALID_POSITION;
+//            if (gem.swapDoneCallback != null) gem.swapDoneCallback(gem);
+//            gem.scale = 1.0;
+//          }
+//        }
+//      }
+//    }
     
-    updateSwap(dt);
+    //updateSwap(dt);
   }
   
   void updateSwap(double dt) {

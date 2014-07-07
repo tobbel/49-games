@@ -4,7 +4,7 @@ class Gem {
   Vector2 position;
   Vector2 fromPosition = Board.INVALID_POSITION;
   Vector2 targetPosition = Board.INVALID_POSITION;
-  Vector2 renderPosition = Board.INVALID_POSITION;
+  //Vector2 renderPosition = Board.INVALID_POSITION;
   double moveTimer = 0.0;
   double moveTime = 0.5;
   int type = -1;
@@ -13,7 +13,7 @@ class Gem {
   var swapDoneCallback;
   Sprite sprite;
   Gem(this.position, this.type) {
-    renderPosition = this.position;
+    //renderPosition = this.position;
     sprite = new Sprite(SuperPop.spriteSheet, 64, 64);
   }
   

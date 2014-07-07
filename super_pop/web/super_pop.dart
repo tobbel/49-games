@@ -34,6 +34,10 @@ class SuperPop {
   int downIndex = -1;
   bool swapping = false;
   double animationTimer = 0.0;
+  final double animationTime = 0.5;
+  
+  int swapFrom = -1;
+  int swapTo = -1;
   
   var rand = new Random();
   Board board;
@@ -60,6 +64,10 @@ class SuperPop {
       case GameState.IDLE: 
         break;    
       case GameState.SWAP:
+        // Swapping, just update animation
+        print('swapping');
+        print('from: $swapFrom');
+        print('to: $swapTo');
         // Swap is done
         if (animationTimer <= 0) {
           currentState = GameState.CLEAR;
@@ -69,6 +77,7 @@ class SuperPop {
         break;
       case GameState.CLEAR:
         // Fade out of swapped gems is done
+        print('clear swapped!');
         if (animationTimer <= 0) {
           currentState = GameState.FALL;
           // Delete all matched squares (list filled from (temp, after moved) board when trying to swap)
@@ -110,23 +119,34 @@ class SuperPop {
     
     // Grid
     for (int i = 0; i < BOARD_SIZE; i++) {
+      final Gem gem = board.getGemAt(index: i);
+      //final double x = gem.renderPosition.x;
+      //final double y = gem.renderPosition.y;
+      double x = gem.position.x;
+      double y = gem.position.y;
+      
       // Check if this gem is swapping, render offset if it is
-      final Gem gem = board.getGemAt(index : i);
-      final double x = gem.renderPosition.x;
-      final double y = gem.renderPosition.y;
+      if (i == swapFrom || i == swapTo) {
+        // Offset by timer
+        final double timerFraction = animationTimer / animationTime;
+        Gem other;
+        if (i == swapFrom) {
+          other = board.getGemAt(index: swapTo);
+        } else {
+          other = board.getGemAt(index: swapFrom);
+        }
+        if (other != null) {          
+          x = (gem.position.x * timerFraction) + (other.position.x * (1 - timerFraction));
+          y = (gem.position.y * timerFraction) + (other.position.y * (1 - timerFraction));
+        }
+      }
+      
       gem.sprite.draw(new Vector2(x * TILE_WIDTH, y * TILE_HEIGHT), index: gem.type);
       final int sx = (gem.type % SPRITES_COUNT) * TILE_WIDTH;
       final int sy = (gem.type ~/ SPRITES_COUNT) * TILE_HEIGHT;
       final double dx = x * TILE_WIDTH;
       final double dy = y * TILE_WIDTH;
       final double scalePositionOffset = (gem.scale - 1.0) / 2.0;
-      // TODO: Check style guide
-      //context.drawImageScaledFromSource(spriteSheet, 
-      //    sx, sy, TILE_WIDTH, TILE_HEIGHT, 
-      //    dx - TILE_WIDTH * scalePositionOffset, 
-      //    dy - TILE_HEIGHT * scalePositionOffset, 
-      //    TILE_WIDTH * gem.scale, 
-      //    TILE_HEIGHT * gem.scale);
     }
     
     // Marker
@@ -190,8 +210,13 @@ class SuperPop {
   }
   
   void trySwap(int indexFrom, int indexTo) {
-    board.trySwap(indexFrom, indexTo);
-    swapping = true;
+    if (board.trySwap(indexFrom, indexTo)) {
+      swapFrom = indexFrom;
+      swapTo = indexTo;
+      currentState = GameState.SWAP;
+      animationTimer = animationTime;
+    }
+    //swapping = true;
   }
   
   Vector2 canvasToGridPosition(Vector2 canvasPosition) {
