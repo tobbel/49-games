@@ -71,8 +71,15 @@ class SuperPop {
         // Swap is done
         if (animationTimer <= 0) {
           currentState = GameState.CLEAR;
-          // Actually swap gems
+          // Actually swap gems:
+          //board.swap(swapFrom, swapTo); ->
+          //Gem g0 = gems[i0];
+          //gems[i0] = gems[i1];
+          //gems[i1] = g0;
           // Reset anim timer
+          animationTimer = 0.0;
+          swapFrom = -1;
+          swapTo = -1;
         }
         break;
       case GameState.CLEAR:
@@ -161,7 +168,7 @@ class SuperPop {
   
   void drawMarker(int x, int y)
   {
-    if (swapping) return;
+    //if (swapping) return;
     
     final int sx = (8 % SPRITES_COUNT) * TILE_WIDTH;
     final int sy = (8 ~/ SPRITES_COUNT) * TILE_HEIGHT;
