@@ -47,27 +47,27 @@ class SuperPop {
   
   void start() {
     context = canvas.context2D;
-    board = new Board(BOARD_WIDTH, BOARD_HEIGHT, swapDone);
+    board = new Board(BOARD_WIDTH, BOARD_HEIGHT);//, swapDone);
     Sprite.context = context;
   }
   
-  void swapDone() {
-    swapping = false;
-  }
+//  void swapDone() {
+//    swapping = false;
+//  }
   
   void update(double dt) {
     if (animationTimer > 0.0) {
       animationTimer -= dt;
     }
     
+    swapping = swapFrom != -1 && swapTo != -1;
+    
     switch (currentState) {
       case GameState.IDLE: 
         break;    
       case GameState.SWAP:
         // Swapping, just update animation
-        print('swapping');
-        print('from: $swapFrom');
-        print('to: $swapTo');
+        
         // Swap is done
         if (animationTimer <= 0) {
           currentState = GameState.CLEAR;

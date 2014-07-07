@@ -12,9 +12,9 @@ class Board {
   
   var rand = new Random();
   
-  var swapDoneGameCallback;
+  //var swapDoneGameCallback;
   
-  Board(this.width, this.height, this.swapDoneGameCallback) {
+  Board(this.width, this.height) {//, this.swapDoneGameCallback) {
     this.size = width * height;
     for (int index = 0; index < size; index++) {
       final int x = index % width;
@@ -325,18 +325,18 @@ class Board {
   
   void updateSwap(double dt) {
     // TODO: More stable solution (this only works for 2, is quite ugly)
-    if (swappedGems.length == 2) {
-      int i0 = gems.indexOf(swappedGems[0]);
-      int i1 = gems.indexOf(swappedGems[1]);
-      Gem g0 = gems[i0];
-      gems[i0] = gems[i1];
-      gems[i1] = g0;
-      swappedGems.clear();
-      swapDoneGameCallback();
-    }
-    if (bouncedGemCount == 2) {
-      bouncedGemCount = 0;
-      swapDoneGameCallback();
-    }
+//    if (swappedGems.length == 2) {
+//      int i0 = gems.indexOf(swappedGems[0]);
+//      int i1 = gems.indexOf(swappedGems[1]);
+//      Gem g0 = gems[i0];
+//      gems[i0] = gems[i1];
+//      gems[i1] = g0;
+//      swappedGems.clear();
+//      swapDoneGameCallback();
+//    }
+//    if (bouncedGemCount == 2) {
+//      bouncedGemCount = 0;
+//      swapDoneGameCallback();
+//    }
   }
 }
