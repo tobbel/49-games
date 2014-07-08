@@ -72,10 +72,7 @@ class SuperPop {
         if (animationTimer <= 0) {
           currentState = GameState.CLEAR;
           // Actually swap gems:
-          //board.swap(swapFrom, swapTo); ->
-          //Gem g0 = gems[i0];
-          //gems[i0] = gems[i1];
-          //gems[i1] = g0;
+          board.swap(swapFrom, swapTo);
           // Reset anim timer
           animationTimer = 0.0;
           swapFrom = -1;
@@ -84,9 +81,10 @@ class SuperPop {
         break;
       case GameState.CLEAR:
         // Fade out of swapped gems is done
-        print('clear swapped!');
+        print('clear');
         if (animationTimer <= 0) {
           currentState = GameState.FALL;
+          board.removeRows();
           // Delete all matched squares (list filled from (temp, after moved) board when trying to swap)
           // Calculate who should fall how
           // Apply fall
@@ -95,7 +93,8 @@ class SuperPop {
         }
         break;
       case GameState.FALL:
-        // Fall animation is done 
+        // Fall animation is done
+        print('fall');
         if (animationTimer <= 0) {
           // Check board if any new matches have been made
           // If so, switch to CLEAR

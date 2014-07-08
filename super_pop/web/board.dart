@@ -3,7 +3,7 @@ part of super_pop;
 class Board {
   static final Vector2 INVALID_POSITION = new Vector2(-1.0, -1.0);
   List<Gem> gems = new List<Gem>();
-  List<Gem> swappedGems = new List<Gem>();
+  //List<Gem> swappedGems = new List<Gem>();
   int bouncedGemCount = 0;
   
   final int width;
@@ -24,9 +24,9 @@ class Board {
   }
   
   // TODO: Solve this with one callback method, argument(s)?
-  void swapDoneCallback(Gem gem) {
-    swappedGems.add(gem);
-  }
+//  void swapDoneCallback(Gem gem) {
+//    swappedGems.add(gem);
+//  }
   
   void bounceDoneCallback(Gem gem) {
     bouncedGemCount++;
@@ -128,7 +128,7 @@ class Board {
 //    }
   }
   
-  void removeRows(double dt) {
+  void removeRows() {
     List<int> toRemove = new List<int>();
     for (int index = 0; index < size; index++) {
       final int x = index % width;
@@ -166,6 +166,7 @@ class Board {
     }
     
     for (int i = 0; i < toRemove.length; i++) {
+      print('removing ${toRemove[i]}');
       gems[toRemove[i]] = new Gem(new Vector2((toRemove[i] % width).toDouble(), (toRemove[i] ~/ height).toDouble()), SuperPop.INVALID_TILE);
     }
   }
@@ -196,6 +197,15 @@ class Board {
 //    }
     
     return match;    
+  }
+  
+  void swap(int indexFrom, int indexTo) {
+    Gem temp = gems[indexTo];
+    gems[indexTo] = gems[indexFrom];
+    gems[indexFrom] = temp;
+
+    gems[indexTo].position = new Vector2((indexTo % SuperPop.BOARD_WIDTH).toDouble(), (indexTo ~/ SuperPop.BOARD_HEIGHT).toDouble());
+    gems[indexFrom].position = new Vector2((indexFrom % SuperPop.BOARD_WIDTH).toDouble(), (indexFrom ~/ SuperPop.BOARD_HEIGHT).toDouble());
   }
 
   Gem getGemAt({int index : -1, int x : -1, int y : -1}) {
