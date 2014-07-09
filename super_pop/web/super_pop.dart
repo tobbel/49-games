@@ -70,6 +70,7 @@ class SuperPop {
         
         // Swap is done
         if (animationTimer <= 0) {
+          animationTimer = 0.0;
           currentState = GameState.CLEAR;
           // Actually swap gems:
           board.swap(swapFrom, swapTo);
@@ -90,17 +91,20 @@ class SuperPop {
           
           // Calculate who should fall how
           board.calculateFallDistance();
+          
           // Apply fall
+          
           // Mark top spaces as empty
           // Reset anim timer
-          //animationTimer = animationTime;
+          animationTimer = animationTime;
         }
         break;
       case GameState.FALL:
-        print('fall');
+        
 
         // Fall animation is done
         if (animationTimer <= 0) {
+          print('fall done');
           // If any on board are still falling,
           // Check board if any new matches have been made
           // If so, switch to CLEAR
@@ -128,7 +132,7 @@ class SuperPop {
   void draw(double dt) {
     // Clear
     context.clearRect(0, 0, canvas.width, canvas.height);
-    
+    final double timerFraction = animationTimer / animationTime;
     // Grid
     for (int i = 0; i < BOARD_SIZE; i++) {
       final Gem gem = board.getGemAt(index: i);
@@ -136,33 +140,36 @@ class SuperPop {
       //final double y = gem.renderPosition.y;
       double x = gem.position.x;
       double y = gem.position.y;
-      
-      // Check if this gem is swapping, render offset if it is
-      if (i == swapFrom || i == swapTo) {
-        // Offset by timer
-        final double timerFraction = animationTimer / animationTime;
-        Gem other;
-        if (i == swapFrom) {
-          other = board.getGemAt(index: swapTo);
-        } else {
-          other = board.getGemAt(index: swapFrom);
+      if (currentState == GameState.SWAP) {
+        // Check if this gem is swapping, render offset if it is
+        if (i == swapFrom || i == swapTo) {
+          // Offset by timer
+          Gem other;
+          if (i == swapFrom) {
+            other = board.getGemAt(index: swapTo);
+          } else {
+            other = board.getGemAt(index: swapFrom);
+          }
+          if (other != null) {          
+            x = (gem.position.x * timerFraction) + (other.position.x * (1 - timerFraction));
+            y = (gem.position.y * timerFraction) + (other.position.y * (1 - timerFraction));
+          }
         }
-        if (other != null) {          
-          x = (gem.position.x * timerFraction) + (other.position.x * (1 - timerFraction));
-          y = (gem.position.y * timerFraction) + (other.position.y * (1 - timerFraction));
-        }
-      }
-      
-      if (currentState == GameState.CLEAR) {
+      } else if (currentState == GameState.CLEAR && gem.type == INVALID_TILE) {
         // Alpha out for invalid tiles
+        gem.sprite.setAlpha(timerFraction);
+      } else if (currentState == GameState.FALL && gem.fallDistance > 0) {
+        // During one fall cycle, just fall one distance down. Next will restart
+        print('someone is falling');
+        y = (gem.position.y * timerFraction) + ((gem.position.y + 1) * (1 - timerFraction));
       }
       
       gem.sprite.draw(new Vector2(x * TILE_WIDTH, y * TILE_HEIGHT), index: gem.type);
-      final int sx = (gem.type % SPRITES_COUNT) * TILE_WIDTH;
-      final int sy = (gem.type ~/ SPRITES_COUNT) * TILE_HEIGHT;
-      final double dx = x * TILE_WIDTH;
-      final double dy = y * TILE_WIDTH;
-      final double scalePositionOffset = (gem.scale - 1.0) / 2.0;
+//      final int sx = (gem.type % SPRITES_COUNT) * TILE_WIDTH;
+//      final int sy = (gem.type ~/ SPRITES_COUNT) * TILE_HEIGHT;
+//      final double dx = x * TILE_WIDTH;
+//      final double dy = y * TILE_WIDTH;
+//      final double scalePositionOffset = (gem.scale - 1.0) / 2.0;
     }
     
     // Marker
