@@ -9,6 +9,7 @@ class Gem {
   double moveTimer = 0.0;
   double moveTime = 0.5;
   int type = -1;
+  int fallDistance = 0;
   double scale = 1.0;
   bool returnOnSwap = false;
   var swapDoneCallback;

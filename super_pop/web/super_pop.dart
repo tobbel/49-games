@@ -84,10 +84,12 @@ class SuperPop {
         print('clear');
         if (animationTimer <= 0) {
           currentState = GameState.FALL;
-          board.removeRows();
           // Delete all matched squares (list filled from (temp, after moved) board when trying to swap)
+          board.removeRows();
           // Calculate who should fall how
+          board.calculateFallDistance();
           // Apply fall
+          //board.startFall();
           // Mark top spaces as empty
           // Reset anim timer
         }
