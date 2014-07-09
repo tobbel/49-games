@@ -8,7 +8,10 @@ class Gem {
   //Vector2 renderPosition = Board.INVALID_POSITION;
   double moveTimer = 0.0;
   double moveTime = 0.5;
+  
+  // TODO: "Enum", see GameState
   int type = -1;
+  int fallDistance = 0;
   double scale = 1.0;
   bool returnOnSwap = false;
   var swapDoneCallback;

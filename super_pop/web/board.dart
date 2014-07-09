@@ -23,10 +23,34 @@ class Board {
     }
   }
   
-  // TODO: Solve this with one callback method, argument(s)?
-//  void swapDoneCallback(Gem gem) {
-//    swappedGems.add(gem);
-//  }
+  void calculateFallDistance() {
+    for (int x = 0; x < SuperPop.BOARD_WIDTH; x++) {
+      for (int y = SuperPop.BOARD_HEIGHT - 1; y >= 0; y--) {
+        // Check gem; if ths is invalid, above should fall.
+        Gem gem = getGemAt(x: x, y: y);
+        if (gem.type == SuperPop.INVALID_TILE) {          
+          for (int aboveY = (y - 1); aboveY >= 0; aboveY--) {
+            Gem above = getGemAt(x: x, y: aboveY);
+            if (above != null) {
+              above.fallDistance++;
+            }
+          }
+        }
+      }
+    }
+    
+    // Print all w/ fallDistance
+    String out = '';
+    for (int y = 0; y < SuperPop.BOARD_HEIGHT; y++) {
+      out += '[';
+      for (int x = 0; x < SuperPop.BOARD_WIDTH; x++) {
+        Gem gem = getGemAt(x: x, y: y);
+        out += '${gem.fallDistance}, ';
+      }
+      out += ']\n';
+    }
+    print(out);
+  }
   
   void bounceDoneCallback(Gem gem) {
     bouncedGemCount++;

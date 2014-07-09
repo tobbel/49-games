@@ -74,9 +74,12 @@ class SuperPop {
           // Actually swap gems:
           board.swap(swapFrom, swapTo);
           // Reset anim timer
-          animationTimer = 0.0;
+          animationTimer = animationTime;
           swapFrom = -1;
           swapTo = -1;
+          
+          // Mark matched squares for deletion
+          board.removeRows();
         }
         break;
       case GameState.CLEAR:
@@ -84,18 +87,21 @@ class SuperPop {
         print('clear');
         if (animationTimer <= 0) {
           currentState = GameState.FALL;
-          board.removeRows();
-          // Delete all matched squares (list filled from (temp, after moved) board when trying to swap)
+          
           // Calculate who should fall how
+          board.calculateFallDistance();
           // Apply fall
           // Mark top spaces as empty
           // Reset anim timer
+          //animationTimer = animationTime;
         }
         break;
       case GameState.FALL:
-        // Fall animation is done
         print('fall');
+
+        // Fall animation is done
         if (animationTimer <= 0) {
+          // If any on board are still falling,
           // Check board if any new matches have been made
           // If so, switch to CLEAR
           currentState = GameState.IDLE;
@@ -145,6 +151,10 @@ class SuperPop {
           x = (gem.position.x * timerFraction) + (other.position.x * (1 - timerFraction));
           y = (gem.position.y * timerFraction) + (other.position.y * (1 - timerFraction));
         }
+      }
+      
+      if (currentState == GameState.CLEAR) {
+        // Alpha out for invalid tiles
       }
       
       gem.sprite.draw(new Vector2(x * TILE_WIDTH, y * TILE_HEIGHT), index: gem.type);
