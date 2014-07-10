@@ -209,6 +209,18 @@ class Board {
     }
   }
   
+  void refresh() {
+    for (int index = 0; index < size; index++) {
+      Gem gem = gems[index];
+      
+      if (gem.type == SuperPop.INVALID_TILE) {
+        final int x = index % width;
+        final int y = index ~/ height;
+        gems[index] = new Gem(new Vector2(x.toDouble(), y.toDouble()), rand.nextInt(7));
+      }
+    }
+  }
+  
   bool trySwap(int indexFrom, int indexTo) {
     Gem temp = gems[indexTo];
     gems[indexTo] = gems[indexFrom];

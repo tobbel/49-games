@@ -103,6 +103,7 @@ class SuperPop {
           board.swapFallenTiles();
 
           // Randomize new on top
+          board.refresh();
           
           // Check board if any new matches have been made
           // If so, switch to CLEAR
