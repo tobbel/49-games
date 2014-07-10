@@ -152,7 +152,7 @@ class Board {
 //    }
   }
   
-  void removeRows() {
+  bool removeRows() {
     List<int> toRemove = new List<int>();
     for (int index = 0; index < size; index++) {
       final int x = index % width;
@@ -189,10 +189,12 @@ class Board {
       matches.clear();
     }
     
+    bool removed = false;
     for (int i = 0; i < toRemove.length; i++) {
-      print('removing ${toRemove[i]}');
+      removed = true;
       gems[toRemove[i]] = new Gem(new Vector2((toRemove[i] % width).toDouble(), (toRemove[i] ~/ height).toDouble()), SuperPop.INVALID_TILE);
     }
+    return removed;
   }
   
   void swapFallenTiles() {

@@ -106,8 +106,12 @@ class SuperPop {
           board.refresh();
           
           // Check board if any new matches have been made
+          if (board.removeRows()) {
+            currentState = GameState.CLEAR;
+          } else {            
+            currentState = GameState.IDLE;
+          }
           // If so, switch to CLEAR
-          currentState = GameState.IDLE;
           // Reset fall distance for all
           // actually swap all tiles
           // Randomize new on top
