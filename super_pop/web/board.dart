@@ -198,6 +198,7 @@ class Board {
   }
   
   void swapFallenTiles() {
+    // TODO: From bottom up, one row at a time?
     for (int index = 0; index < size; index++) {
       Gem gem = gems[index];
       
