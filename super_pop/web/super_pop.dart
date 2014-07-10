@@ -109,7 +109,9 @@ class SuperPop {
           // Check board if any new matches have been made
           // If so, switch to CLEAR
           currentState = GameState.IDLE;
-          
+          // Reset fall distance for all
+          // actually swap all tiles
+          // Randomize new on top
         break;
       }
     }
@@ -159,9 +161,8 @@ class SuperPop {
         // Alpha out for invalid tiles
         gem.sprite.setAlpha(timerFraction);
       } else if (currentState == GameState.FALL && gem.fallDistance > 0) {
-        // During one fall cycle, just fall one distance down. Next will restart
-        print('someone is falling');
-        y = (gem.position.y * timerFraction) + ((gem.position.y + 1) * (1 - timerFraction));
+        // Fall all the way
+        y = (gem.position.y * timerFraction) + ((gem.position.y + gem.fallDistance) * (1 - timerFraction));
       }
       
       gem.sprite.draw(new Vector2(x * TILE_WIDTH, y * TILE_HEIGHT), index: gem.type);
