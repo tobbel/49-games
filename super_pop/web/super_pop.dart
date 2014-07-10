@@ -50,6 +50,8 @@ class SuperPop {
     // TODO: Handle matches in starting board
     board = new Board(BOARD_WIDTH, BOARD_HEIGHT);
     Sprite.context = context;
+    
+    if (board.removeRows()) currentState = GameState.CLEAR;
   }
   
   void update(double dt) {
@@ -82,7 +84,6 @@ class SuperPop {
         break;
       case GameState.CLEAR:
         // Fade out of swapped gems is done
-        print('clear');
         if (animationTimer <= 0) {
           currentState = GameState.FALL;
           
@@ -107,6 +108,7 @@ class SuperPop {
           
           // Check board if any new matches have been made
           if (board.removeRows()) {
+            animationTimer = animationTime;
             currentState = GameState.CLEAR;
           } else {            
             currentState = GameState.IDLE;
