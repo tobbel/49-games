@@ -47,13 +47,10 @@ class SuperPop {
   
   void start() {
     context = canvas.context2D;
-    board = new Board(BOARD_WIDTH, BOARD_HEIGHT);//, swapDone);
+    // TODO: Handle matches in starting board
+    board = new Board(BOARD_WIDTH, BOARD_HEIGHT);
     Sprite.context = context;
   }
-  
-//  void swapDone() {
-//    swapping = false;
-//  }
   
   void update(double dt) {
     if (animationTimer > 0.0) {
@@ -92,9 +89,6 @@ class SuperPop {
           // Calculate who should fall how
           board.calculateFallDistance();
           
-          // Apply fall
-          
-          // Mark top spaces as empty
           // Reset anim timer
           animationTimer = animationTime;
         }
@@ -105,7 +99,11 @@ class SuperPop {
         // Fall animation is done
         if (animationTimer <= 0) {
           print('fall done');
-          // If any on board are still falling,
+          // Swap fallen tiles with tiles above them
+          board.swapFallenTiles();
+
+          // Randomize new on top
+          
           // Check board if any new matches have been made
           // If so, switch to CLEAR
           currentState = GameState.IDLE;

@@ -195,6 +195,20 @@ class Board {
     }
   }
   
+  void swapFallenTiles() {
+    for (int index = 0; index < size; index++) {
+      Gem gem = gems[index];
+      
+      if (gem.fallDistance == 0) continue;
+      
+      // Swap with falldistance above
+      final int indexTo = index + (gem.fallDistance * width);
+      
+      gem.fallDistance = 0;
+      swap(index, indexTo);
+    }
+  }
+  
   bool trySwap(int indexFrom, int indexTo) {
     Gem temp = gems[indexTo];
     gems[indexTo] = gems[indexFrom];
