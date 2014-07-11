@@ -86,10 +86,10 @@ class SuperPop {
         // Fade out of swapped gems is done
         if (animationTimer <= 0) {
           currentState = GameState.FALL;
-          
+          // Delete all matched squares (list filled from (temp, after moved) board when trying to swap)
+          board.removeRows();
           // Calculate who should fall how
           board.calculateFallDistance();
-          
           // Reset anim timer
           animationTimer = animationTime;
         }

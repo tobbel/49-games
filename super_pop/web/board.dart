@@ -252,6 +252,10 @@ class Board {
     return match;    
   }
   
+  void calculateFallDistance() {
+    
+  }
+  
   void swap(int indexFrom, int indexTo) {
     Gem temp = gems[indexTo];
     gems[indexTo] = gems[indexFrom];
