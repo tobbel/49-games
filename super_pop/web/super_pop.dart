@@ -168,9 +168,13 @@ class SuperPop {
             y = (gem.position.y * timerFraction) + (other.position.y * (1 - timerFraction));
           }
         }
-      } else if (currentState == GameState.CLEAR && gem.type == INVALID_TILE) {
-        // Alpha out for invalid tiles
-        gem.sprite.setAlpha(timerFraction);
+      } else if (gem.type == INVALID_TILE) {
+        if (currentState == GameState.CLEAR) {
+          // Alpha out for invalid tiles
+          gem.sprite.setAlpha(timerFraction);          
+        } else if (currentState == GameState.FALL) {
+          gem.sprite.setAlpha(0.0);
+        }
       } else if (currentState == GameState.FALL && gem.fallDistance > 0) {
         // Fall all the way
         y = (gem.position.y * timerFraction) + ((gem.position.y + gem.fallDistance) * (1 - timerFraction));
