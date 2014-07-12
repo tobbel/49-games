@@ -33,7 +33,13 @@ class SuperPop {
   int mouseY = 0;
   int downIndex = -1;
   bool swapping = false;
+  
+  // TODO: Separate timers
   double animationTimer = 0.0;
+  // swaptimer
+  // cleartimer
+  // falltimer
+  // etc.
   final double animationTime = 0.5;
   
   int swapFrom = -1;
@@ -171,11 +177,6 @@ class SuperPop {
       }
       
       gem.sprite.draw(new Vector2(x * TILE_WIDTH, y * TILE_HEIGHT), index: gem.type);
-//      final int sx = (gem.type % SPRITES_COUNT) * TILE_WIDTH;
-//      final int sy = (gem.type ~/ SPRITES_COUNT) * TILE_HEIGHT;
-//      final double dx = x * TILE_WIDTH;
-//      final double dy = y * TILE_WIDTH;
-//      final double scalePositionOffset = (gem.scale - 1.0) / 2.0;
     }
     
     // Marker
@@ -190,8 +191,6 @@ class SuperPop {
   
   void drawMarker(int x, int y)
   {
-    //if (swapping) return;
-    
     final int sx = (8 % SPRITES_COUNT) * TILE_WIDTH;
     final int sy = (8 ~/ SPRITES_COUNT) * TILE_HEIGHT;
     final int dx = x * TILE_WIDTH;
@@ -245,7 +244,6 @@ class SuperPop {
       currentState = GameState.SWAP;
       animationTimer = animationTime;
     }
-    //swapping = true;
   }
   
   Vector2 canvasToGridPosition(Vector2 canvasPosition) {

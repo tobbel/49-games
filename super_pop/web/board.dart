@@ -236,24 +236,8 @@ class Board {
     temp = gems[indexTo];
     gems[indexTo] = gems[indexFrom];
     gems[indexFrom] = temp;
-
-    // If a swap will cause a match
-//    if (match) {
-//      // Start anim and when anim is done, swap positions for realsies
-//      gems[indexTo].moveTo(index : indexFrom, callback : swapDoneCallback);
-//      gems[indexFrom].moveTo(index : indexTo, callback : swapDoneCallback);
-//    } else {
-//      // If not
-//      // Stat bounce anim
-//      gems[indexTo].moveTo(index: indexFrom, returnOnSwap : true, callback : bounceDoneCallback);
-//      gems[indexFrom].moveTo(index: indexTo, returnOnSwap : true, callback : bounceDoneCallback);
-//    }
     
     return match;    
-  }
-  
-  void calculateFallDistance() {
-    
   }
   
   void swap(int indexFrom, int indexTo) {
