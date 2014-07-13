@@ -105,7 +105,6 @@ class SuperPop {
 
         // Fall animation is done
         if (animationTimer <= 0) {
-          print('fall done');
           // Swap fallen tiles with tiles above them
           board.swapFallenTiles();
 
@@ -114,6 +113,7 @@ class SuperPop {
           
           // Check board if any new matches have been made
           if (board.removeRows()) {
+            // TODO: Chained falls messes up calculation of fallDistance, fix.
             animationTimer = animationTime;
             currentState = GameState.CLEAR;
           } else {            

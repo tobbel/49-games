@@ -23,8 +23,10 @@ class Board {
     }
   }
   
+  // TODO: Fix. Fall distance is iffy, some will fall when they should not.
   void calculateFallDistance() {
-    for (int x = 0; x < SuperPop.BOARD_WIDTH; x++) {
+    //for (int x = 0; x < SuperPop.BOARD_WIDTH; x++) {
+    int x = 0;
       for (int y = SuperPop.BOARD_HEIGHT - 1; y >= 0; y--) {
         // Check gem; if ths is invalid, above should fall.
         Gem gem = getGemAt(x: x, y: y);
@@ -36,7 +38,7 @@ class Board {
             }
           }
         }
-      }
+      //}
     }
     
     // Print all w/ fallDistance
@@ -198,7 +200,7 @@ class Board {
   }
   
   void swapFallenTiles() {
-    // TODO: From bottom up, one row at a time?
+    // TODO: Tiles are swapped incorrectly, fix.
     for (int index = 0; index < size; index++) {
       Gem gem = gems[index];
       
