@@ -30,8 +30,9 @@ class Board {
       for (int y = SuperPop.BOARD_HEIGHT - 1; y >= 0; y--) {
         // Check gem; if ths is invalid, above should fall.
         Gem gem = getGemAt(x: x, y: y);
-        if (gem.type == SuperPop.INVALID_TILE) {          
-          for (int aboveY = (y - 1); aboveY >= 0; aboveY--) {
+        if (gem.type == SuperPop.INVALID_TILE) {
+          int aboveY = y - 1;
+          for (;aboveY >= 0; aboveY--) {
             Gem above = getGemAt(x: x, y: aboveY);
             if (above != null) {
               above.fallDistance++;

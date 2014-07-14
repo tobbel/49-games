@@ -101,8 +101,6 @@ class SuperPop {
         }
         break;
       case GameState.FALL:
-        
-
         // Fall animation is done
         if (animationTimer <= 0) {
           // Swap fallen tiles with tiles above them
