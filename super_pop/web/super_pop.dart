@@ -179,6 +179,11 @@ class SuperPop {
       }
       
       gem.sprite.draw(new Vector2(x * TILE_WIDTH, y * TILE_HEIGHT), index: gem.type);
+      for (int i = 0; i < gem.fallDistance; i++) {
+        final int x = gem.position.x.toInt();
+        final int y = gem.position.y.toInt();
+        context.fillRect(x, y, 10, 10);
+      }
     }
     
     // Marker
