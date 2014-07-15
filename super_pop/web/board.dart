@@ -25,8 +25,8 @@ class Board {
   
   // TODO: Fix. Fall distance is iffy, some will fall when they should not.
   void calculateFallDistance() {
-    //for (int x = 0; x < SuperPop.BOARD_WIDTH; x++) {
-    int x = 0;
+    for (int x = 0; x < SuperPop.BOARD_WIDTH; x++) {
+    //int x = 0;
       for (int y = SuperPop.BOARD_HEIGHT - 1; y >= 0; y--) {
         // Check gem; if ths is invalid, above should fall.
         Gem gem = getGemAt(x: x, y: y);
@@ -34,25 +34,16 @@ class Board {
           int aboveY = y - 1;
           for (;aboveY >= 0; aboveY--) {
             Gem above = getGemAt(x: x, y: aboveY);
-            if (above != null) {
+            if (above != null && above.type != SuperPop.INVALID_TILE) {
               above.fallDistance++;
             }
           }
         }
-      //}
+      }
     }
     
-    // Print all w/ fallDistance
-    String out = '';
-    for (int y = 0; y < SuperPop.BOARD_HEIGHT; y++) {
-      out += '[';
-      for (int x = 0; x < SuperPop.BOARD_WIDTH; x++) {
-        Gem gem = getGemAt(x: x, y: y);
-        out += '${gem.fallDistance}, ';
-      }
-      out += ']\n';
-    }
-    print(out);
+    print('fall distance after calculation');
+    printFallDistance();
   }
   
   void bounceDoneCallback(Gem gem) {
@@ -213,6 +204,21 @@ class Board {
       gem.fallDistance = 0;
       swap(index, indexTo);
     }
+    print('Fall distance post swap');
+    printFallDistance();
+  }
+  
+  void printFallDistance() {
+    String out = '';
+    for (int y = 0; y < SuperPop.BOARD_HEIGHT; y++) {
+      out += '[';
+      for (int x = 0; x < SuperPop.BOARD_WIDTH; x++) {
+        Gem gem = getGemAt(x: x, y: y);
+        out += '${gem.fallDistance}, ';
+      }
+      out += ']\n';
+    }
+    print(out);
   }
   
   void refresh() {
