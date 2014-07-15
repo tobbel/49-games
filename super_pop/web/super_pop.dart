@@ -91,7 +91,7 @@ class SuperPop {
       case GameState.CLEAR:
         // Fade out of swapped gems is done
         if (animationTimer <= 0) {
-          currentState = GameState.FALL;
+          currentState = GameState.IDLE;
           // Delete all matched squares (list filled from (temp, after moved) board when trying to swap)
           board.removeRows();
           // Calculate who should fall how
@@ -179,11 +179,12 @@ class SuperPop {
       }
       
       gem.sprite.draw(new Vector2(x * TILE_WIDTH, y * TILE_HEIGHT), index: gem.type);
-      for (int i = 0; i < gem.fallDistance; i++) {
-        final int x = gem.position.x.toInt();
-        final int y = gem.position.y.toInt();
-        context.fillRect(x, y, 10, 10);
-      }
+      context.fillText(gem.fallDistance.toString(), gem.position.x * TILE_WIDTH, (gem.position.y * TILE_HEIGHT) + 32);
+      //for (int i = 0; i < gem.fallDistance; i++) {
+      //  final int x = gem.position.x.toInt();
+      //  final int y = gem.position.y.toInt();
+      //  context.fillRect(x, y, 10, 10);
+      //}
     }
     
     // Marker
