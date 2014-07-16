@@ -217,7 +217,7 @@ class Board {
     print(out);
   }
   
-  void refresh() {
+  void generateNewGems() {
     for (int index = 0; index < size; index++) {
       Gem gem = gems[index];
       

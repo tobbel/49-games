@@ -107,14 +107,16 @@ class SuperPop {
           board.swapFallenTiles();
 
           // Randomize new on top
-          board.refresh();
+          board.generateNewGems();
           
           // Check board if any new matches have been made
           if (board.removeRows()) {
             // TODO: Chained falls messes up calculation of fallDistance, fix.
             animationTimer = animationTime;
             currentState = GameState.CLEAR;
-          } else {            
+            board.gems.forEach((g) => g.fallDistance = 0);
+          } else {
+            board.gems.forEach((g) => g.fallDistance = 0);
             currentState = GameState.IDLE;
           }
           // If so, switch to CLEAR
