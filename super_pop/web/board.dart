@@ -3,7 +3,6 @@ part of super_pop;
 class Board {
   static final Vector2 INVALID_POSITION = new Vector2(-1.0, -1.0);
   List<Gem> gems = new List<Gem>();
-  //List<Gem> swappedGems = new List<Gem>();
   int bouncedGemCount = 0;
   
   final int width;
@@ -12,9 +11,7 @@ class Board {
   
   var rand = new Random();
   
-  //var swapDoneGameCallback;
-  
-  Board(this.width, this.height) {//, this.swapDoneGameCallback) {
+  Board(this.width, this.height) {
     this.size = width * height;
     for (int index = 0; index < size; index++) {
       final int x = index % width;
@@ -26,7 +23,6 @@ class Board {
   // TODO: Fix. Fall distance is iffy, some will fall when they should not.
   void calculateFallDistance() {
     for (int x = 0; x < SuperPop.BOARD_WIDTH; x++) {
-    //int x = 0;
       for (int y = SuperPop.BOARD_HEIGHT - 1; y >= 0; y--) {
         // Check gem; if ths is invalid, above should fall.
         Gem gem = getGemAt(x: x, y: y);
