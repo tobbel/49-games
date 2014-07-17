@@ -271,10 +271,11 @@ class Board {
     // Check two steps up, down, left, right from this index.
     // If type of checked pieces if not same as that of index, abort.
     // If position is invalid, abort.
+    // If on another row, abort.
     // If one of the loops reaches max, return true!
     // In end, return false.
     final int startType = gems[index].type;
-    
+    final int y = index ~/ height;
     // Up
     for (int up = 1; up < 3; up++) {
       final int upIndex = index - (up * width);
@@ -286,6 +287,8 @@ class Board {
     for (int right = 1; right < 3; right++) {
       final int rightIndex = index + right;
       if (!isValid(index : rightIndex) || gems[rightIndex].type != startType) break;
+      final int nY = rightIndex ~/ height; 
+      if (nY != y) break;
       if (right == 2) return true;
     }
     
@@ -300,6 +303,8 @@ class Board {
     for (int left = 1; left < 3; left++) {
       final int leftIndex = index - left;
       if (!isValid(index : leftIndex) || gems[leftIndex].type != startType) break;
+      final int nY = leftIndex ~/ height;
+      if (nY != y) break;
       if (left == 2) return true;
     }
     
@@ -308,6 +313,8 @@ class Board {
       if (mid == 0) continue;
       final int row = index + mid;
       if (!isValid(index : row) || gems[row].type != startType) break;
+      final int nY = row ~/ height;
+      if (nY != y) break;
       if (mid == 1) return true;
     }
     
