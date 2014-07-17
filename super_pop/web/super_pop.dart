@@ -36,6 +36,8 @@ class SuperPop {
   
   // TODO: Separate timers
   double animationTimer = 0.0;
+  double swapTimer = 0.0;
+  static const double SWAP_TIME = 0.5;
   // swaptimer
   // cleartimer
   // falltimer
@@ -72,21 +74,36 @@ class SuperPop {
         break;    
       case GameState.SWAP:
         // Swapping, just update animation
-        
-        // Swap is done
-        if (animationTimer <= 0) {
-          animationTimer = 0.0;
-          currentState = GameState.CLEAR;
-          // Actually swap gems:
-          board.swap(swapFrom, swapTo);
-          // Reset anim timer
-          animationTimer = animationTime;
-          swapFrom = -1;
-          swapTo = -1;
-          
-          // Mark matched squares for deletion
-          board.removeRows();
+        if (swapTimer > 0.0) {
+          swapTimer -= dt;
+          if (swapTimer <= 0.0) {
+            swapTimer = 0.0;
+            currentState = GameState.CLEAR;
+            // Actually swap gems:
+            board.swap(swapFrom, swapTo);
+            // Reset anim timer
+            animationTimer = animationTime;
+            swapFrom = -1;
+            swapTo = -1;
+            
+            // Mark matched squares for deletion
+            board.removeRows();
+          }
         }
+        // Swap is done
+//        if (animationTimer <= 0) {
+//          animationTimer = 0.0;
+//          currentState = GameState.CLEAR;
+//          // Actually swap gems:
+//          board.swap(swapFrom, swapTo);
+//          // Reset anim timer
+//          animationTimer = animationTime;
+//          swapFrom = -1;
+//          swapTo = -1;
+//          
+//          // Mark matched squares for deletion
+//          board.removeRows();
+//        }
         break;
       case GameState.CLEAR:
         // Fade out of swapped gems is done
@@ -96,6 +113,8 @@ class SuperPop {
           board.removeRows();
           // Calculate who should fall how
           board.calculateFallDistance();
+          
+          //TODO: Generate new tiles here
           // Reset anim timer
           animationTimer = animationTime;
         }
@@ -107,13 +126,16 @@ class SuperPop {
           board.swapFallenTiles();
 
           // Randomize new on top
+          // TODO: Do this before fall
+          // TODO: Sometimes fallen tiles differ from those that fall,
+          // does this function overwrite them?
           board.generateNewGems();
           
           // Check board if any new matches have been made
           if (board.removeRows()) {
-            // TODO: Chained falls messes up calculation of fallDistance, fix.
             animationTimer = animationTime;
             currentState = GameState.CLEAR;
+            // TODO: Temp, clear fall distance in board
             board.gems.forEach((g) => g.fallDistance = 0);
           } else {
             board.gems.forEach((g) => g.fallDistance = 0);
@@ -163,9 +185,10 @@ class SuperPop {
           } else {
             other = board.getGemAt(index: swapFrom);
           }
-          if (other != null) {          
-            x = (gem.position.x * timerFraction) + (other.position.x * (1 - timerFraction));
-            y = (gem.position.y * timerFraction) + (other.position.y * (1 - timerFraction));
+          if (other != null) {
+            final double swapTimerFraction = swapTimer / SWAP_TIME;
+            x = (gem.position.x * swapTimerFraction) + (other.position.x * (1 - swapTimerFraction));
+            y = (gem.position.y * swapTimerFraction) + (other.position.y * (1 - swapTimerFraction));
           }
         }
       } else if (gem.type == INVALID_TILE) {
@@ -252,7 +275,7 @@ class SuperPop {
       swapFrom = indexFrom;
       swapTo = indexTo;
       currentState = GameState.SWAP;
-      animationTimer = animationTime;
+      swapTimer = SWAP_TIME;
     }
   }
   
