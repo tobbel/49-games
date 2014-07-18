@@ -258,7 +258,9 @@ class SuperPop {
   
   void mouseUp(Vector2 position) {
     if (downIndex == -1) return;
-    position = canvasToGridPosition(position);
+    position = 
+        
+        canvasToGridPosition(position);
     setMousePosition(position);
     final int index = mouseY * BOARD_WIDTH + mouseX;
     if (index == downIndex) { 
@@ -276,6 +278,7 @@ class SuperPop {
       swapTo = indexTo;
       currentState = GameState.SWAP;
       swapTimer = SWAP_TIME;
+      
     }
   }
   
