@@ -171,8 +171,6 @@ class SuperPop {
     // Grid
     for (int i = 0; i < BOARD_SIZE; i++) {
       final Gem gem = board.getGemAt(index: i);
-      //final double x = gem.renderPosition.x;
-      //final double y = gem.renderPosition.y;
       double x = gem.position.x;
       double y = gem.position.y;
       if (currentState == GameState.SWAP) {

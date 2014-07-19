@@ -218,15 +218,18 @@ class Board {
   }
   
   void generateNewGems() {
+    int counter = 0;
     for (int index = 0; index < size; index++) {
       Gem gem = gems[index];
       
       if (gem.type == SuperPop.INVALID_TILE) {
+        counter++;
         final int x = index % width;
         final int y = index ~/ height;
         gems[index] = new Gem(new Vector2(x.toDouble(), y.toDouble()), rand.nextInt(7));
       }
     }
+    print('generated $counter new tiles');
   }
   
   bool trySwap(int indexFrom, int indexTo) {
@@ -274,6 +277,7 @@ class Board {
     // If on another row, abort.
     // If one of the loops reaches max, return true!
     // In end, return false.
+    // TODO: Still causes matchs on wrap-arounds
     final int startType = gems[index].type;
     final int y = index ~/ height;
     // Up
