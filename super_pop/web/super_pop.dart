@@ -205,11 +205,6 @@ class SuperPop {
       
       gem.sprite.draw(new Vector2(x * TILE_WIDTH, y * TILE_HEIGHT), index: gem.type);
       context.fillText(gem.fallDistance.toString(), gem.position.x * TILE_WIDTH, (gem.position.y * TILE_HEIGHT) + 32);
-      //for (int i = 0; i < gem.fallDistance; i++) {
-      //  final int x = gem.position.x.toInt();
-      //  final int y = gem.position.y.toInt();
-      //  context.fillRect(x, y, 10, 10);
-      //}
     }
     
     // Marker
@@ -258,9 +253,7 @@ class SuperPop {
   
   void mouseUp(Vector2 position) {
     if (downIndex == -1) return;
-    position = 
-        
-        canvasToGridPosition(position);
+    position = canvasToGridPosition(position);
     setMousePosition(position);
     final int index = mouseY * BOARD_WIDTH + mouseX;
     if (index == downIndex) { 
