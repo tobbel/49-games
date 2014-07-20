@@ -38,8 +38,8 @@ class SuperPop {
   double animationTimer = 0.0;
   double swapTimer = 0.0;
   static const double SWAP_TIME = 0.5;
-  // swaptimer
-  // cleartimer
+  double clearTimer = 0.0;
+  static const double CLEAR_TIME = 0.5;
   // falltimer
   // etc.
   final double animationTime = 0.5;
@@ -55,7 +55,6 @@ class SuperPop {
   
   void start() {
     context = canvas.context2D;
-    // TODO: Handle matches in starting board
     board = new Board(BOARD_WIDTH, BOARD_HEIGHT);
     Sprite.context = context;
     
@@ -83,6 +82,7 @@ class SuperPop {
             board.swap(swapFrom, swapTo);
             // Reset anim timer
             animationTimer = animationTime;
+            clearTimer = CLEAR_TIME;
             swapFrom = -1;
             swapTo = -1;
             
@@ -90,33 +90,22 @@ class SuperPop {
             board.removeRows();
           }
         }
-        // Swap is done
-//        if (animationTimer <= 0) {
-//          animationTimer = 0.0;
-//          currentState = GameState.CLEAR;
-//          // Actually swap gems:
-//          board.swap(swapFrom, swapTo);
-//          // Reset anim timer
-//          animationTimer = animationTime;
-//          swapFrom = -1;
-//          swapTo = -1;
-//          
-//          // Mark matched squares for deletion
-//          board.removeRows();
-//        }
         break;
       case GameState.CLEAR:
         // Fade out of swapped gems is done
-        if (animationTimer <= 0) {
-          currentState = GameState.FALL;
-          // Delete all matched squares (list filled from (temp, after moved) board when trying to swap)
-          board.removeRows();
-          // Calculate who should fall how
-          board.calculateFallDistance();
-          
-          //TODO: Generate new tiles here
-          // Reset anim timer
-          animationTimer = animationTime;
+        if (clearTimer > 0.0) {
+          clearTimer -= dt;
+          if (clearTimer <= 0.0) {
+            currentState = GameState.FALL;
+            // Delete all matched squares (list filled from (temp, after moved) board when trying to swap)
+            board.removeRows();
+            // Calculate who should fall how
+            board.calculateFallDistance();
+            
+            //TODO: Generate new tiles here
+            // Reset anim timer
+            animationTimer = animationTime;
+          }
         }
         break;
       case GameState.FALL:
