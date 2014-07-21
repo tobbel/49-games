@@ -124,6 +124,7 @@ class SuperPop {
           if (board.removeRows()) {
             animationTimer = animationTime;
             currentState = GameState.CLEAR;
+            clearTimer = CLEAR_TIME;
             // TODO: Temp, clear fall distance in board
             board.gems.forEach((g) => g.fallDistance = 0);
           } else {
