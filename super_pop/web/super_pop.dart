@@ -259,7 +259,6 @@ class SuperPop {
       swapTo = indexTo;
       currentState = GameState.SWAP;
       swapTimer = SWAP_TIME;
-      
     }
   }
   

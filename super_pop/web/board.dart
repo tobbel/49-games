@@ -196,12 +196,10 @@ class Board {
       
       // Swap with falldistance above
       final int indexTo = index + (gem.fallDistance * width);
-      
+      // TODO: Pause here and debug out indexTo, make sure it is correct position
       gem.fallDistance = 0;
       swap(index, indexTo);
     }
-    print('Fall distance post swap');
-    printFallDistance();
   }
   
   void printFallDistance() {
